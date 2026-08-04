@@ -1,0 +1,111 @@
+---
+import { SITE_TITLE, NAV_LINKS } from '../consts';
+import ThemeToggle from './ThemeToggle.astro';
+
+const path = Astro.url.pathname;
+
+/** 首页只在精确匹配时高亮，其余按前缀匹配，这样 /posts/xxx/ 也能点亮「文章」 */
+function isCurrent(href: string) {
+  if (href === '/') return path === '/';
+  return path === href || path.startsWith(href);
+}
+---
+
+<header class="masthead">
+  <div class="masthead-top">
+    <a href="/" class="wordmark">{SITE_TITLE}</a>
+    <ThemeToggle />
+  </div>
+
+  <p class="colophon">MESIPHY · NOTES &nbsp;/&nbsp; 学习记录 · 技术分享 · 产品思考</p>
+
+  <nav aria-label="主导航">
+    <ul>
+      {
+        NAV_LINKS.map((link) => (
+          <li>
+            <a href={link.href} aria-current={isCurrent(link.href) ? 'page' : undefined}>
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .masthead {
+    padding-top: 2rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .masthead-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .wordmark {
+    font-family: var(--font-mono);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    text-decoration: none;
+    border: none;
+  }
+
+  .wordmark:hover {
+    color: var(--stamp);
+    text-decoration: none;
+  }
+
+  .colophon {
+    margin: 0.4rem 0 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+  }
+
+  /* 双线报头，是这套复古印刷语言里最省事也最有效的一笔 */
+  nav {
+    border-top: 3px double var(--ink-muted);
+    border-bottom: 1px solid var(--rule);
+    padding: 0.5rem 0;
+  }
+
+  nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  nav a {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    color: var(--ink-muted);
+    border: none;
+    text-decoration: none;
+  }
+
+  nav a:hover {
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  nav a[aria-current='page'] {
+    color: var(--stamp);
+  }
+
+  nav a[aria-current='page']::before {
+    content: '▪ ';
+  }
+</style>

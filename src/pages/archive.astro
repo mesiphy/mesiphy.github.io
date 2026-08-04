@@ -1,0 +1,118 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPosts, groupByYear, formatDate, isoDate, postUrl } from '../lib/posts';
+import { categoryByName } from '../consts';
+
+const posts = await getPosts();
+const years = groupByYear(posts);
+---
+
+<BaseLayout title="归档" description="按年份排列的全部文章。">
+  <h1 class="page-title">归档</h1>
+  <p class="page-sub meta">共 {posts.length} 篇</p>
+
+  {
+    years.length === 0 ? (
+      <p class="empty-note">暂无文章。</p>
+    ) : (
+      years.map(({ year, posts: yearPosts }) => (
+        <section class="year">
+          <h2 class="year-label">
+            {year}
+            <span class="year-count">{yearPosts.length} 篇</span>
+          </h2>
+          <ul class="entries">
+            {yearPosts.map((post) => {
+              const category = categoryByName(post.data.category);
+              return (
+                <li class="entry">
+                  <time datetime={isoDate(post.data.date)} class="entry-date">
+                    {formatDate(post.data.date).slice(5)}
+                  </time>
+                  <a href={postUrl(post)} class="entry-title">
+                    {post.data.title}
+                  </a>
+                  {category && <span class="entry-cat">{category.name}</span>}
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ))
+    )
+  }
+</BaseLayout>
+
+<style>
+  .page-title {
+    margin-bottom: 0.35rem;
+  }
+
+  .page-sub {
+    margin: 0 0 2rem;
+  }
+
+  .year + .year {
+    margin-top: 2.5rem;
+  }
+
+  .year-label {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    font-size: 1.5rem;
+    letter-spacing: 0.04em;
+    color: var(--ink-faint);
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .year-count {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+  }
+
+  .entries {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .entry {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9rem;
+    padding: 0.55rem 0;
+    border-bottom: 1px dashed var(--rule-soft);
+  }
+
+  .entry-date {
+    flex: none;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+    letter-spacing: 0.04em;
+  }
+
+  .entry-title {
+    text-decoration: none;
+    flex: 1;
+  }
+
+  .entry-title:hover {
+    color: var(--stamp);
+  }
+
+  .entry-cat {
+    flex: none;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--ink-faint);
+  }
+
+  @media (max-width: 32rem) {
+    .entry-cat {
+      display: none;
+    }
+  }
+</style>

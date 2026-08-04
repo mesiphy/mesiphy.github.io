@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostList from '../../components/PostList.astro';
+import { PAGE_SIZE } from '../../consts';
+import { getPosts } from '../../lib/posts';
+
+const posts = await getPosts();
+const total = Math.max(1, Math.ceil(posts.length / PAGE_SIZE));
+---
+
+<BaseLayout title="全部文章" description="按时间倒序排列的全部文章。">
+  <h1 class="page-title">全部文章</h1>
+  <p class="page-note">共 {posts.length} 篇</p>
+  <PostList posts={posts.slice(0, PAGE_SIZE)} current={1} {total} />
+</BaseLayout>
+
+<style>
+  .page-title {
+    margin-bottom: 0.35rem;
+  }
+
+  .page-note {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--rule);
+  }
+</style>

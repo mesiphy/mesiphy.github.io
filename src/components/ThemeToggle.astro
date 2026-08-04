@@ -1,0 +1,49 @@
+---
+// 亮/暗切换。状态存在 localStorage，首屏由 BaseHead 的内联脚本先行应用。
+---
+
+<button id="theme-toggle" type="button" aria-label="切换亮色/暗色主题" title="切换主题">
+  <span class="mark" aria-hidden="true"></span>
+</button>
+
+<style>
+  #theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    background: transparent;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    cursor: pointer;
+    color: var(--ink-muted);
+  }
+
+  #theme-toggle:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+
+  /* 实心/空心方块，呼应点阵印刷的语言，比图标更贴合整体风格 */
+  .mark {
+    width: 0.6rem;
+    height: 0.6rem;
+    border: 1.5px solid currentColor;
+    background: currentColor;
+  }
+
+  :global([data-theme='dark']) .mark {
+    background: transparent;
+  }
+</style>
+
+<script>
+  const toggle = document.getElementById('theme-toggle');
+  toggle?.addEventListener('click', () => {
+    const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('theme', next);
+  });
+</script>

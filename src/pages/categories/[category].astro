@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostList from '../../components/PostList.astro';
+import { getPosts, type Post } from '../../lib/posts';
+import { CATEGORIES } from '../../consts';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+
+  // 即使某个分类暂时没有文章也生成页面，避免导航指向 404。
+  return CATEGORIES.map((category) => ({
+    params: { category: category.slug },
+    props: {
+      name: category.name,
+      description: category.description,
+      posts: posts.filter((p) => p.data.category === category.name),
+    },
+  }));
+}
+
+interface Props {
+  name: string;
+  description: string;
+  posts: Post[];
+}
+
+const { name, description, posts } = Astro.props;
+---
+
+<BaseLayout title={name} {description}>
+  <p class="crumb meta"><a href="/">首页</a> / 分类</p>
+  <h1 class="page-title">{name}</h1>
+  <p class="page-desc">{description}</p>
+  <p class="page-sub meta">{posts.length} 篇</p>
+
+  <PostList {posts} />
+</BaseLayout>
+
+<style>
+  .crumb {
+    margin: 0 0 0.4rem;
+  }
+
+  .crumb a {
+    color: var(--ink-faint);
+    text-decoration: none;
+  }
+
+  .crumb a:hover {
+    color: var(--stamp);
+  }
+
+  .page-title {
+    margin-bottom: 0.4rem;
+  }
+
+  .page-desc {
+    margin: 0 0 0.3rem;
+    color: var(--ink-soft);
+    max-width: var(--measure);
+  }
+
+  .page-sub {
+    margin: 0 0 1rem;
+  }
+</style>

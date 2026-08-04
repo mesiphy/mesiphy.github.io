@@ -1,0 +1,93 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Pagefind 的索引是在 astro build 之后由 CLI 生成的（见 package.json 的 build 脚本），
+// dev 模式下 /pagefind/ 不存在，所以这里做了降级提示。
+const isDev = import.meta.env.DEV;
+---
+
+<BaseLayout title="搜索" description="全文搜索站内文章。">
+  <h1 class="page-title">搜索</h1>
+
+  {
+    isDev ? (
+      <p class="empty-note">
+        搜索索引由构建流程生成，开发模式下不可用。
+        <br />
+        本地验证请运行 <code>npm run build &amp;&amp; npm run preview</code>。
+      </p>
+    ) : (
+      <div id="search" class="search-mount">
+        <noscript>
+          <p class="empty-note">全文搜索需要 JavaScript。可以改用 <a href="/archive/">归档</a> 或 <a href="/tags/">标签</a> 浏览。</p>
+        </noscript>
+      </div>
+    )
+  }
+</BaseLayout>
+
+{
+  !isDev && (
+    <>
+      <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+      <script is:inline src="/pagefind/pagefind-ui.js" is:raw />
+      <script is:inline>
+        window.addEventListener('DOMContentLoaded', () => {
+          if (typeof PagefindUI === 'undefined') return;
+          new PagefindUI({
+            element: '#search',
+            showSubResults: true,
+            showImages: false,
+            resetStyles: false,
+            translations: {
+              placeholder: '搜索文章',
+              clear_search: '清空',
+              load_more: '加载更多',
+              search_label: '站内搜索',
+              zero_results: '没有找到匹配 [SEARCH_TERM] 的内容',
+              many_results: '找到 [COUNT] 条匹配 [SEARCH_TERM] 的结果',
+              one_result: '找到 1 条匹配 [SEARCH_TERM] 的结果',
+              searching: '正在搜索 [SEARCH_TERM]…',
+            },
+          });
+        });
+      </script>
+    </>
+  )
+}
+
+<style is:global>
+  /* 把 Pagefind 默认 UI 拉进复古油墨的配色里 */
+  .search-mount {
+    --pagefind-ui-scale: 0.85;
+    --pagefind-ui-primary: var(--ink);
+    --pagefind-ui-text: var(--ink);
+    --pagefind-ui-background: var(--paper);
+    --pagefind-ui-border: var(--rule);
+    --pagefind-ui-tag: var(--paper-raised);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 0;
+    --pagefind-ui-font: var(--font-body);
+  }
+
+  .search-mount .pagefind-ui__search-input {
+    font-family: var(--font-mono);
+  }
+
+  .search-mount .pagefind-ui__result-title {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+  }
+
+  .search-mount mark {
+    background: transparent;
+    color: var(--stamp);
+    font-weight: 700;
+  }
+</style>
+
+<style>
+  .page-title {
+    margin-bottom: 1.5rem;
+  }
+</style>

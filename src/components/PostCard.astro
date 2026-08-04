@@ -1,0 +1,118 @@
+---
+import { categoryByName } from '../consts';
+import { formatDate, isoDate, postUrl, type Post } from '../lib/posts';
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const category = categoryByName(post.data.category);
+---
+
+<article class="card">
+  <header class="card-meta">
+    <time datetime={isoDate(post.data.date)} class="card-date">
+      {formatDate(post.data.date)}
+    </time>
+    {
+      category && (
+        <a href={`/categories/${category.slug}/`} class="stamp">
+          {category.name}
+        </a>
+      )
+    }
+    {post.data.draft && <span class="stamp stamp-draft">草稿</span>}
+  </header>
+
+  <h2 class="card-title">
+    <a href={postUrl(post)}>{post.data.title}</a>
+  </h2>
+
+  <p class="card-desc">{post.data.description}</p>
+
+  {
+    post.data.tags.length > 0 && (
+      <ul class="card-tags">
+        {post.data.tags.map((tag) => (
+          <li>
+            <a href={`/tags/${encodeURIComponent(tag)}/`}>#{tag}</a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</article>
+
+<style>
+  .card {
+    padding-block: 1.75rem;
+    border-bottom: 1px dashed var(--rule);
+  }
+
+  .card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .card-date {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+  }
+
+  .card-title {
+    margin: 0 0 0.5rem;
+    font-size: 1.375rem;
+    line-height: 1.4;
+  }
+
+  .card-title a {
+    color: var(--ink);
+    text-decoration: none;
+    background-image: linear-gradient(var(--ink-faint), var(--ink-faint));
+    background-size: 0 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.25s ease;
+  }
+
+  .card-title a:hover {
+    background-size: 100% 1px;
+  }
+
+  .card-desc {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 0.9375rem;
+  }
+
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 0.75rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .card-tags a {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+    text-decoration: none;
+  }
+
+  .card-tags a:hover {
+    color: var(--stamp);
+  }
+
+  /* 草稿标记只在 dev 下会出现，用灰调区别于分类印章 */
+  .stamp-draft {
+    color: var(--ink-faint);
+  }
+</style>

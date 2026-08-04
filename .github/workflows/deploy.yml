@@ -1,0 +1,56 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # 允许在 Actions 页面手动触发一次部署
+  workflow_dispatch:
+
+# GITHUB_TOKEN 的权限：读仓库、写 Pages、申请 id-token 用于部署认证
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一时间只跑一个部署，新的 push 会取代排队中的旧任务
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          # 与本地开发环境保持一致，避免"本地能跑线上挂"
+          node-version: 24
+          cache: npm
+
+      # 用 lockfile 精确安装，保证线上构建和本地一致
+      - run: npm ci
+
+      # 类型和 frontmatter 校验。写错 category 或漏字段会在这里拦下来，
+      # 而不是等到线上页面变成空白
+      - run: npm run check
+
+      # astro build 之后跑 pagefind，生成静态搜索索引
+      - run: npm run build
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

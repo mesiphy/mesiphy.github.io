@@ -1,0 +1,69 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="404" description="页面不存在。">
+  <div class="panel">
+    <pre class="code" aria-hidden="true">
++------------------------+
+|                        |
+|   E R R O R   4 0 4    |
+|                        |
+|   PAGE NOT FOUND       |
+|                        |
++------------------------+</pre>
+    <h1 class="title">这一页没有印出来</h1>
+    <p class="note">
+      地址可能拼错了，或者这篇东西已经被我挪走了。
+    </p>
+    <p class="links">
+      <a href="/">回首页</a>
+      <span aria-hidden="true">·</span>
+      <a href="/archive/">看归档</a>
+      <span aria-hidden="true">·</span>
+      <a href="/search/">搜一下</a>
+    </p>
+  </div>
+</BaseLayout>
+
+<style>
+  .panel {
+    text-align: center;
+    padding-block: 2rem 4rem;
+  }
+
+  .code {
+    display: inline-block;
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.4;
+    color: var(--ink-faint);
+    margin: 0 0 2rem;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+
+  .title {
+    font-size: 1.4rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .note {
+    color: var(--ink-soft);
+    margin-bottom: 1.5rem;
+  }
+
+  .links {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+    color: var(--ink-faint);
+  }
+
+  .links a {
+    text-decoration: none;
+  }
+</style>

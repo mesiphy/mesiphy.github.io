@@ -1,0 +1,70 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPosts, collectTags } from '../../lib/posts';
+
+const posts = await getPosts();
+const tags = collectTags(posts);
+---
+
+<BaseLayout title="标签" description="全部标签，按文章数排序。">
+  <h1 class="page-title">标签</h1>
+  <p class="page-sub meta">共 {tags.length} 个</p>
+
+  {
+    tags.length === 0 ? (
+      <p class="empty-note">暂无标签。</p>
+    ) : (
+      <ul class="cloud">
+        {tags.map(({ tag, count }) => (
+          <li>
+            <a href={`/tags/${encodeURIComponent(tag)}/`}>
+              <span class="name">#{tag}</span>
+              <span class="count">{count}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .page-title {
+    margin-bottom: 0.35rem;
+  }
+
+  .page-sub {
+    margin: 0 0 1.75rem;
+  }
+
+  .cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .cloud a {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4em;
+    padding: 0.3em 0.6em;
+    border: 1px solid var(--rule);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    text-decoration: none;
+    color: var(--ink-soft);
+  }
+
+  .cloud a:hover {
+    color: var(--stamp);
+    border-color: var(--stamp);
+  }
+
+  .count {
+    font-size: 0.68rem;
+    color: var(--ink-faint);
+  }
+</style>

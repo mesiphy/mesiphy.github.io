@@ -1,0 +1,112 @@
+---
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+
+// 只取 h2 / h3。更深的层级在目录里会变成噪音。
+const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+{
+  items.length > 1 && (
+    <nav class="toc" aria-labelledby="toc-heading">
+      <p id="toc-heading" class="toc-title">目录</p>
+      <ol>
+        {items.map((h) => (
+          <li class:list={['toc-item', `depth-${h.depth}`]}>
+            <a href={`#${h.slug}`}>{h.text}</a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}
+
+<style>
+  .toc {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    line-height: 1.6;
+  }
+
+  .toc-title {
+    margin: 0 0 0.6rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .toc-item.depth-3 {
+    padding-left: 1em;
+  }
+
+  a {
+    display: block;
+    padding: 0.2em 0;
+    color: var(--ink-faint);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    padding-left: 0.6em;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  a:hover {
+    color: var(--ink);
+  }
+
+  a[aria-current='true'] {
+    color: var(--stamp);
+    border-left-color: var(--stamp);
+  }
+</style>
+
+<script>
+  // 滚动高亮当前小节。用 IntersectionObserver 而不是 scroll 事件，避免高频回调。
+  const links = document.querySelectorAll<HTMLAnchorElement>('.toc a');
+  if (links.length) {
+    const byId = new Map<string, HTMLAnchorElement>();
+    for (const link of links) {
+      byId.set(decodeURIComponent(link.hash.slice(1)), link);
+    }
+
+    const visible = new Set<string>();
+    const targets = [...byId.keys()]
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+
+    const paint = () => {
+      // 屏幕上可能同时有多个标题，取文档顺序里最靠前的那个
+      const active = targets.find((el) => visible.has(el.id));
+      for (const [id, link] of byId) {
+        if (active && id === active.id) link.setAttribute('aria-current', 'true');
+        else link.removeAttribute('aria-current');
+      }
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) visible.add(entry.target.id);
+          else visible.delete(entry.target.id);
+        }
+        paint();
+      },
+      // 顶部留出 header 高度，底部收窄，让"当前小节"更符合直觉
+      { rootMargin: '-72px 0px -70% 0px' },
+    );
+
+    for (const target of targets) observer.observe(target);
+  }
+</script>

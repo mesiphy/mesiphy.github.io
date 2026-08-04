@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { CATEGORIES, SITE_AUTHOR } from '../consts';
+---
+
+<BaseLayout title="关于" description="关于这个站点和它的作者。">
+  <h1 class="page-title">关于</h1>
+
+  <div class="prose">
+    <p>
+      这里是 {SITE_AUTHOR} 的个人站点。它首先是写给自己的：把学过的东西记下来，把做过的东西摊开，
+      顺便逼自己把想法说清楚。如果对路过的人也有用，那是额外的收获。
+    </p>
+
+    <h2>写什么</h2>
+    <ul>
+      {CATEGORIES.map((c) => (
+        <li>
+          <a href={`/categories/${c.slug}/`}>{c.name}</a> —— {c.description}
+        </li>
+      ))}
+    </ul>
+
+    <h2>关于这个站</h2>
+    <p>
+      静态站点，用 Astro 构建，托管在 GitHub Pages 上，推送到 main 分支后自动部署。
+      正文是仓库里的纯 Markdown 文件，所以换框架也能整体搬走。
+    </p>
+    <p>
+      视觉上想做的是复古油墨打印的感觉：暖灰纸面、等宽标题、极淡点阵纹理。
+      没有加载任何中文字体文件，排版全部依赖系统字体栈，所以页面很轻。
+    </p>
+
+    <h2>联系</h2>
+    <p>
+      找我最快的方式是 <a href={`https://github.com/${SITE_AUTHOR}`} rel="me">GitHub</a>。
+      也可以订阅 <a href="/rss.xml">RSS</a>。
+    </p>
+  </div>
+</BaseLayout>
+
+<style>
+  .page-title {
+    margin-bottom: 1.5rem;
+  }
+</style>

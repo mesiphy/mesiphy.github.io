@@ -1,0 +1,35 @@
+---
+import PostCard from './PostCard.astro';
+import Pagination from './Pagination.astro';
+import type { Post } from '../lib/posts';
+
+interface Props {
+  posts: Post[];
+  /** 不传则不渲染分页控件（分类页、标签页等不需要分页） */
+  current?: number;
+  total?: number;
+}
+
+const { posts, current = 1, total = 1 } = Astro.props;
+---
+
+{
+  posts.length === 0 ? (
+    <p class="empty-note">这里还没有文章。</p>
+  ) : (
+    <div class="list">
+      {posts.map((post) => (
+        <PostCard {post} />
+      ))}
+    </div>
+  )
+}
+
+<Pagination {current} {total} />
+
+<style>
+  /* 第一张卡片不需要上内边距，让标题和列表贴紧 */
+  .list > :global(article:first-child) {
+    padding-top: 0.5rem;
+  }
+</style>

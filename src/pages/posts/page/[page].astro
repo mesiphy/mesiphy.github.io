@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PostList from '../../../components/PostList.astro';
+import Pagination from '../../../components/Pagination.astro';
+import { getPosts } from '../../../lib/posts';
+import { PAGE_SIZE } from '../../../consts';
+
+// 第 1 页由 /posts/index.astro 承担，这里只生成第 2 页起。
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  const total = Math.max(1, Math.ceil(posts.length / PAGE_SIZE));
+
+  return Array.from({ length: Math.max(0, total - 1) }, (_, i) => {
+    const page = i + 2;
+    return {
+      params: { page: String(page) },
+      props: {
+        posts: posts.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+        current: page,
+        total,
+      },
+    };
+  });
+}
+
+interface Props {
+  posts: Awaited<ReturnType<typeof getPosts>>;
+  current: number;
+  total: number;
+}
+
+const { posts, current, total } = Astro.props;
+---
+
+<BaseLayout title={`文章 · 第 ${current} 页`} description="全部文章列表。">
+  <h1 class="page-title">文章</h1>
+  <p class="page-sub meta">第 {current} 页，共 {total} 页</p>
+
+  <PostList {posts} />
+  <Pagination {current} {total} />
+</BaseLayout>
+
+<style>
+  .page-title {
+    margin-bottom: 0.35rem;
+  }
+
+  .page-sub {
+    margin: 0 0 1.5rem;
+  }
+</style>

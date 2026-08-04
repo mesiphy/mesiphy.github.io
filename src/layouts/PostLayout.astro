@@ -1,0 +1,230 @@
+---
+import type { MarkdownHeading } from 'astro';
+import BaseLayout from './BaseLayout.astro';
+import TableOfContents from '../components/TableOfContents.astro';
+import { categoryByName } from '../consts';
+import { formatDate, isoDate, postUrl, readingTime, type Post } from '../lib/posts';
+
+interface Props {
+  post: Post;
+  headings: MarkdownHeading[];
+  prev?: Post;
+  next?: Post;
+}
+
+const { post, headings, prev, next } = Astro.props;
+const { title, description, date, updated, tags, draft } = post.data;
+const category = categoryByName(post.data.category);
+const minutes = readingTime(post.body ?? '');
+---
+
+<BaseLayout {title} {description} type="article" publishedDate={date} wide>
+  <div class="layout">
+    <article class="article">
+      <header class="head">
+        <p class="head-meta">
+          <time datetime={isoDate(date)}>{formatDate(date)}</time>
+          <span aria-hidden="true">·</span>
+          <span>约 {minutes} 分钟</span>
+          {draft && <span class="stamp stamp-draft">草稿</span>}
+        </p>
+        <h1>{title}</h1>
+        <p class="head-desc">{description}</p>
+        <div class="head-tail">
+          {category && <a href={`/categories/${category.slug}/`} class="stamp">{category.name}</a>}
+          {
+            tags.map((tag) => (
+              <a href={`/tags/${encodeURIComponent(tag)}/`} class="tag">
+                {tag}
+              </a>
+            ))
+          }
+        </div>
+        {
+          updated && (
+            <p class="head-updated">
+              最后修订于 <time datetime={isoDate(updated)}>{formatDate(updated)}</time>
+            </p>
+          )
+        }
+      </header>
+
+      <hr class="rule-perforated" />
+
+      {/* data-pagefind-body 让 Pagefind 只索引正文，不索引导航和页脚 */}
+      <div class="prose" data-pagefind-body>
+        <slot />
+      </div>
+
+      {
+        (prev || next) && (
+          <nav class="adjacent" aria-label="上下篇">
+            <div class="adjacent-slot">
+              {prev && (
+                <a href={postUrl(prev)}>
+                  <span class="adjacent-label">← 上一篇</span>
+                  <span class="adjacent-title">{prev.data.title}</span>
+                </a>
+              )}
+            </div>
+            <div class="adjacent-slot align-end">
+              {next && (
+                <a href={postUrl(next)}>
+                  <span class="adjacent-label">下一篇 →</span>
+                  <span class="adjacent-title">{next.data.title}</span>
+                </a>
+              )}
+            </div>
+          </nav>
+        )
+      }
+    </article>
+
+    <aside class="sidebar">
+      <div class="sidebar-inner">
+        <TableOfContents {headings} />
+      </div>
+    </aside>
+  </div>
+</BaseLayout>
+
+<style>
+  .layout {
+    display: grid;
+    gap: 3rem;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* 侧边目录只在有横向空间时出现，窄屏直接不渲染 */
+  @media (min-width: 62rem) {
+    .layout {
+      grid-template-columns: minmax(0, 44rem) 13rem;
+      justify-content: center;
+    }
+  }
+
+  .article {
+    min-width: 0;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  @media (min-width: 62rem) {
+    .sidebar {
+      display: block;
+    }
+    .sidebar-inner {
+      position: sticky;
+      top: 5rem;
+      max-height: calc(100vh - 7rem);
+      overflow-y: auto;
+    }
+  }
+
+  .head-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    color: var(--ink-faint);
+  }
+
+  .head h1 {
+    font-size: clamp(1.6rem, 4.5vw, 2.1rem);
+    margin-bottom: 0.6rem;
+  }
+
+  .head-desc {
+    margin: 0 0 1rem;
+    max-width: var(--measure);
+    color: var(--ink-soft);
+  }
+
+  .head-tail {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .head-updated {
+    margin: 0.9rem 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    color: var(--ink-faint);
+  }
+
+  .adjacent {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+    margin-top: 3.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  @media (min-width: 40rem) {
+    .adjacent {
+      grid-template-columns: 1fr 1fr;
+    }
+    .align-end {
+      text-align: right;
+    }
+  }
+
+  .adjacent-slot a {
+    text-decoration: none;
+  }
+
+  .adjacent-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+    margin-bottom: 0.25rem;
+  }
+
+  .adjacent-title {
+    font-size: 0.92rem;
+    color: var(--ink);
+  }
+
+  .adjacent-slot a:hover .adjacent-title {
+    color: var(--stamp);
+  }
+</style>
+
+<script>
+  // 给每个代码块加一键复制。构建时不生成按钮，运行时注入，
+  // 这样没有 JS 的环境依然能正常阅读代码。
+  for (const pre of document.querySelectorAll<HTMLPreElement>('.prose pre')) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'code-block';
+    pre.parentNode?.insertBefore(wrapper, pre);
+    wrapper.appendChild(pre);
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'copy-btn';
+    button.textContent = '复制';
+    button.setAttribute('aria-label', '复制代码');
+    wrapper.appendChild(button);
+
+    button.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(pre.innerText);
+        button.textContent = '已复制';
+      } catch {
+        button.textContent = '复制失败';
+      }
+      setTimeout(() => (button.textContent = '复制'), 1600);
+    });
+  }
+</script>

@@ -1,0 +1,147 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import { SITE_TITLE } from '../consts';
+import { getPosts, groupByCategory } from '../lib/posts';
+
+const posts = await getPosts();
+const latest = posts.slice(0, 5);
+const grouped = groupByCategory(posts);
+---
+
+<BaseLayout title={SITE_TITLE}>
+  <section class="masthead">
+    <p class="masthead-kicker">学习记录 · 作品集 · 技术分享</p>
+    <h1 class="masthead-title">{SITE_TITLE}</h1>
+    <p class="masthead-lede">
+      写给自己的第一读者。把读过的书、写过的代码、想清楚的产品问题留在这里，
+      顺便让它们变得对别人也有用。
+    </p>
+  </section>
+
+  <hr class="rule-perforated" />
+
+  <section class="categories" aria-label="栏目">
+    {
+      grouped.map(({ category, posts: items }) => (
+        <a href={`/categories/${category.slug}/`} class="cat">
+          <span class="cat-name">{category.name}</span>
+          <span class="cat-desc">{category.description}</span>
+          <span class="cat-count">{String(items.length).padStart(2, '0')} 篇</span>
+        </a>
+      ))
+    }
+  </section>
+
+  <section class="latest">
+    <h2 class="section-title">最新</h2>
+    {
+      latest.length > 0 ? (
+        latest.map((post) => <PostCard {post} />)
+      ) : (
+        <p class="empty-note">还没有文章。在 content/posts/ 里新建一个 .md 文件就能发布。</p>
+      )
+    }
+    {
+      posts.length > latest.length && (
+        <p class="more">
+          <a href="/posts/">查看全部 {posts.length} 篇 →</a>
+        </p>
+      )
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .masthead {
+    padding-block: 1rem 2rem;
+  }
+
+  .masthead-kicker {
+    margin: 0 0 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.16em;
+    color: var(--ink-faint);
+  }
+
+  .masthead-title {
+    margin: 0 0 1rem;
+    font-size: clamp(2rem, 8vw, 2.75rem);
+    letter-spacing: 0.02em;
+  }
+
+  .masthead-lede {
+    max-width: var(--measure);
+    margin: 0;
+    color: var(--ink-soft);
+  }
+
+  .categories {
+    display: grid;
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin-bottom: 3rem;
+  }
+
+  @media (min-width: 40rem) {
+    .categories {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .cat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 1.1rem 1rem;
+    background: var(--paper);
+    text-decoration: none;
+    transition: background 0.15s ease;
+  }
+
+  .cat:hover {
+    background: var(--paper-raised);
+  }
+
+  .cat-name {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .cat:hover .cat-name {
+    color: var(--stamp);
+  }
+
+  .cat-desc {
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+
+  .cat-count {
+    margin-top: auto;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+  }
+
+  .more {
+    margin: 1.75rem 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+  }
+
+  .more a {
+    text-decoration: none;
+    color: var(--ink-soft);
+  }
+
+  .more a:hover {
+    color: var(--stamp);
+  }
+</style>
