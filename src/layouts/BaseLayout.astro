@@ -8,11 +8,11 @@ interface Props {
   description?: string;
   type?: 'website' | 'article';
   publishedDate?: Date;
-  /** 文章页需要更宽的外壳来容纳侧边目录 */
-  wide?: boolean;
+  /** 文章页自己用网格排正文和目录，不需要外层再限宽 */
+  fullWidth?: boolean;
 }
 
-const { title, description, type, publishedDate, wide = false } = Astro.props;
+const { title, description, type, publishedDate, fullWidth = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -23,7 +23,7 @@ const { title, description, type, publishedDate, wide = false } = Astro.props;
   <body>
     <a href="#main" class="skip-link">跳到正文</a>
     <Header />
-    <main id="main" class={wide ? 'shell shell-wide' : 'shell'}>
+    <main id="main" class={fullWidth ? 'shell' : 'shell column-inner'}>
       <slot />
     </main>
     <Footer />
@@ -31,7 +31,8 @@ const { title, description, type, publishedDate, wide = false } = Astro.props;
 </html>
 
 <style>
-  .shell-wide {
-    max-width: 64rem;
+  /* 内容收在与文章正文等宽的列里，右侧留白正好是文章页目录栏的位置 */
+  .column-inner > :global(*) {
+    max-width: var(--column);
   }
 </style>

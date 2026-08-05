@@ -18,7 +18,7 @@ const category = categoryByName(post.data.category);
 const minutes = readingTime(post.body ?? '');
 ---
 
-<BaseLayout {title} {description} type="article" publishedDate={date} wide>
+<BaseLayout {title} {description} type="article" publishedDate={date} fullWidth>
   <div class="layout">
     <article class="article">
       <header class="head">
@@ -95,12 +95,18 @@ const minutes = readingTime(post.body ?? '');
     grid-template-columns: minmax(0, 1fr);
   }
 
-  /* 侧边目录只在有横向空间时出现，窄屏直接不渲染 */
-  @media (min-width: 62rem) {
+  /* 侧边目录只在有横向空间时出现，窄屏直接不渲染。
+     左对齐而非居中：正文左边缘要跟报头的站名对齐 */
+  @media (min-width: 67rem) {
     .layout {
-      grid-template-columns: minmax(0, 44rem) 13rem;
-      justify-content: center;
+      grid-template-columns: minmax(0, var(--column)) 13rem;
+      justify-content: start;
     }
+  }
+
+  /* 文章正文占满内容列，不受 --measure 那套更窄的行宽约束 */
+  .article .prose {
+    max-width: none;
   }
 
   .article {
@@ -111,7 +117,7 @@ const minutes = readingTime(post.body ?? '');
     display: none;
   }
 
-  @media (min-width: 62rem) {
+  @media (min-width: 67rem) {
     .sidebar {
       display: block;
     }
@@ -144,6 +150,14 @@ const minutes = readingTime(post.body ?? '');
     margin: 0 0 1rem;
     max-width: var(--measure);
     color: var(--ink-soft);
+  }
+
+  /* 摘要保持 --measure 的窄行宽（更适合快速扫读），但正文放开后
+     两者落差过大，宽屏下给摘要一个上限更高的行宽 */
+  @media (min-width: 67rem) {
+    .head-desc {
+      max-width: min(var(--column), 52em);
+    }
   }
 
   .head-tail {
