@@ -1,30 +1,28 @@
-/*
- * 设计基调：水彩手账纸上的复古编辑排版。
- * 两侧是低饱和水彩晕染，中间保持干净的阅读区；标题用系统宋体，元信息保留打字机感。
- * 刻意不加载中文 webfont（动辄数 MB），全部走系统字体栈。
- */
+/* 连续水彩纸本编辑风：背景色与纸纤维烘焙在同一张图里，正文直接漂浮在纸面上。 */
 
 :root {
-  --paper: #f4eee2;
-  --paper-raised: rgb(248 243 234 / 0.82);
-  --ink: #2b2924;
-  --ink-muted: #5d574e;
-  --ink-soft: #625a51;
-  --ink-faint: #645c53;
-  --rule: rgb(81 72 61 / 0.24);
-  --rule-soft: rgb(81 72 61 / 0.14);
-  --stamp: #a2573e;
+  --paper: #faf5ea;
+  --paper-raised: rgb(250 245 234 / 0.76);
+  --ink: #102a43;
+  --ink-muted: #4f5d67;
+  --ink-soft: #5f6b72;
+  --ink-faint: #5f6b72;
+  --rule: rgb(23 50 70 / 0.22);
+  --rule-soft: rgb(23 50 70 / 0.13);
+  --accent: #245b8f;
+  --accent-warm: #b86649;
+  --stamp: var(--accent);
   --watercolor-bg: url('../assets/backgrounds/watercolor-light-desktop.webp');
-  --paper-grain: url('../assets/backgrounds/paper-grain.webp');
-  --watercolor-opacity: 1;
-  --grain-opacity: 0.1;
-  --grain-blend: multiply;
+  --title-brush: url('../assets/backgrounds/title-brush-blue.webp');
 
-  --font-display: 'Songti SC', STSong, 'Source Han Serif SC', 'Noto Serif CJK SC', serif;
+  --font-editorial: 'Noto Serif SC', 'Songti SC', STSong, 'Source Han Serif SC',
+    'Noto Serif CJK SC', serif;
+  --font-display: var(--font-editorial);
   --font-mono: 'Cascadia Mono', 'JetBrains Mono', 'SFMono-Regular', Consolas, Menlo, monospace,
     'PingFang SC', 'Microsoft YaHei';
-  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+  --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
     'Microsoft YaHei', 'Source Han Sans SC', 'Noto Sans CJK SC', sans-serif;
+  --font-body: var(--font-editorial);
 
   /* 导语、摘要这类短文本用的窄行宽，约 40 字一行 */
   --measure: 42em;
@@ -39,19 +37,18 @@
 }
 
 :root[data-theme='dark'] {
-  --paper: #1d1a18;
-  --paper-raised: rgb(42 37 33 / 0.84);
-  --ink: #e9e0cf;
-  --ink-muted: #c8bcaa;
-  --ink-soft: #aea493;
-  --ink-faint: #aea493;
-  --rule: rgb(231 221 204 / 0.2);
-  --rule-soft: rgb(231 221 204 / 0.12);
-  --stamp: #d08a68;
+  --paper: #181b1f;
+  --paper-raised: rgb(31 37 43 / 0.76);
+  --ink: #ece2d2;
+  --ink-muted: #c8baa6;
+  --ink-soft: #aea18f;
+  --ink-faint: #aea18f;
+  --rule: rgb(236 225 208 / 0.2);
+  --rule-soft: rgb(236 225 208 / 0.12);
+  --accent: #78a9d6;
+  --accent-warm: #cf8963;
+  --stamp: var(--accent);
   --watercolor-bg: url('../assets/backgrounds/watercolor-dark-desktop.webp');
-  --watercolor-opacity: 1;
-  --grain-opacity: 0.08;
-  --grain-blend: soft-light;
 }
 
 *,
@@ -90,12 +87,12 @@ body {
   background-color: var(--paper);
   color: var(--ink);
   font-family: var(--font-body);
-  line-height: 1.75;
+  line-height: 1.85;
   /* 中文不需要连字，关掉避免奇怪的合并 */
   font-variant-ligatures: none;
 }
 
-/* 水彩和纸纹分层：颜料固定在视口边缘，长文章滚动时不会重复接缝。 */
+/* 色彩与纸纹已融合进背景图，避免独立纹理重复产生接缝。 */
 body::before {
   content: '';
   position: fixed;
@@ -107,20 +104,6 @@ body::before {
   background-position: center top;
   background-repeat: no-repeat;
   background-size: cover;
-  opacity: var(--watercolor-opacity);
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background-image: var(--paper-grain);
-  background-repeat: repeat;
-  background-size: 32rem 32rem;
-  mix-blend-mode: var(--grain-blend);
-  opacity: var(--grain-opacity);
 }
 
 @media (max-width: 40rem) {
@@ -134,8 +117,13 @@ body::after {
 }
 
 @media print {
-  body::before,
-  body::after {
+  :root {
+    --paper: #fff;
+    --ink: #111;
+    --title-brush: none;
+  }
+
+  body::before {
     display: none;
   }
 }
@@ -220,17 +208,17 @@ a {
 }
 
 a:hover {
-  color: var(--stamp);
-  text-decoration-color: var(--stamp);
+  color: var(--accent);
+  text-decoration-color: var(--accent);
 }
 
 :focus-visible {
-  outline: 2px solid var(--stamp);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
 
 ::selection {
-  background: var(--stamp);
+  background: var(--accent);
   color: var(--paper);
 }
 
@@ -262,13 +250,13 @@ hr {
   letter-spacing: 0.06em;
   padding: 0.1em 0.5em;
   border: 1px solid currentColor;
-  color: var(--stamp);
+  color: var(--accent-warm);
   text-decoration: none;
   white-space: nowrap;
 }
 
 a.stamp:hover {
-  background: var(--stamp);
+  background: var(--accent-warm);
   color: var(--paper);
 }
 
@@ -285,12 +273,13 @@ a.stamp:hover {
 }
 
 .tag:hover {
-  color: var(--stamp);
+  color: var(--accent);
 }
 
 .section-title {
-  font-family: var(--font-mono);
+  font-family: var(--font-ui);
   font-size: 0.78rem;
+  font-weight: 600;
   letter-spacing: 0.14em;
   color: var(--ink-faint);
   text-transform: uppercase;
@@ -300,7 +289,7 @@ a.stamp:hover {
 }
 
 .empty-note {
-  font-family: var(--font-mono);
+  font-family: var(--font-ui);
   font-size: 0.85rem;
   color: var(--ink-faint);
   border: 1px dashed var(--rule);
@@ -312,6 +301,8 @@ a.stamp:hover {
 
 .prose {
   max-width: var(--measure);
+  font-size: 1.02rem;
+  line-height: 1.88;
 }
 
 .prose > * + h2 {
@@ -366,6 +357,7 @@ a.stamp:hover {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.9rem;
+  background: var(--paper-raised);
 }
 
 .prose th,
@@ -461,6 +453,6 @@ a.stamp:hover {
 }
 
 .copy-btn:hover {
-  color: var(--stamp);
-  border-color: var(--stamp);
+  color: var(--accent);
+  border-color: var(--accent);
 }

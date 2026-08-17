@@ -74,15 +74,11 @@ const category = categoryByName(post.data.category);
   .card-title a {
     color: var(--ink);
     text-decoration: none;
-    background-image: linear-gradient(var(--ink-faint), var(--ink-faint));
-    background-size: 0 1px;
-    background-position: 0 100%;
-    background-repeat: no-repeat;
-    transition: background-size 0.25s ease;
+    transition: color 0.15s ease;
   }
 
   .card-title a:hover {
-    background-size: 100% 1px;
+    color: var(--accent);
   }
 
   .card-desc {
@@ -108,7 +104,7 @@ const category = categoryByName(post.data.category);
   }
 
   .card-tags a:hover {
-    color: var(--stamp);
+    color: var(--accent);
   }
 
   /* 草稿标记只在 dev 下会出现，用灰调区别于分类印章 */

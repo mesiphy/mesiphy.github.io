@@ -60,14 +60,14 @@ const isDev = import.meta.env.DEV;
   /* 把 Pagefind 默认 UI 拉进复古油墨的配色里 */
   .search-mount {
     --pagefind-ui-scale: 0.85;
-    --pagefind-ui-primary: var(--ink);
+    --pagefind-ui-primary: var(--accent);
     --pagefind-ui-text: var(--ink);
     --pagefind-ui-background: var(--paper);
     --pagefind-ui-border: var(--rule);
     --pagefind-ui-tag: var(--paper-raised);
     --pagefind-ui-border-width: 1px;
     --pagefind-ui-border-radius: 0;
-    --pagefind-ui-font: var(--font-body);
+    --pagefind-ui-font: var(--font-ui);
   }
 
   .search-mount .pagefind-ui__search-input {
@@ -75,13 +75,13 @@ const isDev = import.meta.env.DEV;
   }
 
   .search-mount .pagefind-ui__result-title {
-    font-family: var(--font-mono);
+    font-family: var(--font-editorial);
     font-size: 1rem;
   }
 
   .search-mount mark {
     background: transparent;
-    color: var(--stamp);
+    color: var(--accent);
     font-weight: 700;
   }
 </style>

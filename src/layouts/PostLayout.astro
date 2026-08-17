@@ -142,14 +142,36 @@ const minutes = readingTime(post.body ?? '');
   }
 
   .head h1 {
-    font-size: clamp(1.6rem, 4.5vw, 2.1rem);
-    margin-bottom: 0.6rem;
+    position: relative;
+    isolation: isolate;
+    display: inline-block;
+    padding-bottom: 0.16em;
+    font-size: clamp(2.3rem, 4vw, 3.3rem);
+    line-height: 1.24;
+    margin-bottom: 0.75rem;
+  }
+
+  .head h1::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    left: -0.02em;
+    right: -0.06em;
+    bottom: 0.03em;
+    height: 0.16em;
+    background-image: var(--title-brush);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    opacity: 0.7;
   }
 
   .head-desc {
     margin: 0 0 1rem;
     max-width: var(--measure);
     color: var(--ink-soft);
+    font-size: 1.02rem;
+    line-height: 1.85;
   }
 
   /* 摘要保持 --measure 的窄行宽（更适合快速扫读），但正文放开后
@@ -211,7 +233,17 @@ const minutes = readingTime(post.body ?? '');
   }
 
   .adjacent-slot a:hover .adjacent-title {
-    color: var(--stamp);
+    color: var(--accent);
+  }
+
+  :global(:root[data-theme='dark']) .head h1::after {
+    opacity: 0.82;
+  }
+
+  @media (max-width: 40rem) {
+    .head h1 {
+      font-size: clamp(2.15rem, 10vw, 2.8rem);
+    }
   }
 </style>
 

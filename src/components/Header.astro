@@ -48,17 +48,17 @@ function isCurrent(href: string) {
   }
 
   .wordmark {
-    font-family: var(--font-mono);
-    font-size: 1.5rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
+    font-family: var(--font-editorial);
+    font-size: 1.62rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
     color: var(--ink);
     text-decoration: none;
     border: none;
   }
 
   .wordmark:hover {
-    color: var(--stamp);
+    color: var(--accent);
     text-decoration: none;
   }
 
@@ -88,7 +88,7 @@ function isCurrent(href: string) {
   }
 
   nav a {
-    font-family: var(--font-mono);
+    font-family: var(--font-ui);
     font-size: 0.85rem;
     letter-spacing: 0.04em;
     color: var(--ink-muted);
@@ -102,7 +102,7 @@ function isCurrent(href: string) {
   }
 
   nav a[aria-current='page'] {
-    color: var(--stamp);
+    color: var(--accent);
   }
 
   nav a[aria-current='page']::before {

@@ -149,7 +149,7 @@ const graphs = getCategoryGraphs(
 
   .rail-note {
     margin: 1.25rem 0 0;
-    font-family: var(--font-mono);
+    font-family: var(--font-ui);
     font-size: 0.75rem;
   }
 
@@ -159,11 +159,11 @@ const graphs = getCategoryGraphs(
   }
 
   .rail-note a:hover {
-    color: var(--stamp);
+    color: var(--accent);
   }
 
   .masthead {
-    padding-block: 1rem 2rem;
+    padding-block: 1.5rem 3.25rem;
   }
 
   .masthead-kicker {
@@ -175,15 +175,37 @@ const graphs = getCategoryGraphs(
   }
 
   .masthead-title {
-    margin: 0 0 1rem;
-    font-size: clamp(2rem, 8vw, 2.75rem);
-    letter-spacing: 0.02em;
+    position: relative;
+    isolation: isolate;
+    display: inline-block;
+    margin: 0 0 1.2rem;
+    padding-bottom: 0.12em;
+    font-size: clamp(3rem, 7vw, 5rem);
+    line-height: 1.12;
+    letter-spacing: 0.025em;
+  }
+
+  .masthead-title::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    left: -0.03em;
+    right: -0.08em;
+    bottom: 0.02em;
+    height: 0.18em;
+    background-image: var(--title-brush);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    opacity: 0.72;
   }
 
   .masthead-lede {
     max-width: var(--measure);
     margin: 0;
     color: var(--ink-soft);
+    font-size: 1.05rem;
+    line-height: 1.9;
   }
 
   .categories {
@@ -209,7 +231,7 @@ const graphs = getCategoryGraphs(
     padding: 1.35rem 1rem;
     background: transparent;
     text-decoration: none;
-    transition: background 0.15s ease;
+    transition: color 0.15s ease;
   }
 
   .cat + .cat {
@@ -223,18 +245,18 @@ const graphs = getCategoryGraphs(
   }
 
   .cat:hover {
-    background: var(--paper-raised);
+    color: var(--accent);
   }
 
   .cat-name {
     font-family: var(--font-display);
     font-size: 1.05rem;
     font-weight: 600;
-    color: var(--ink);
+    color: var(--accent-warm);
   }
 
   .cat:hover .cat-name {
-    color: var(--stamp);
+    color: var(--accent);
   }
 
   .cat-desc {
@@ -263,6 +285,24 @@ const graphs = getCategoryGraphs(
   }
 
   .more a:hover {
-    color: var(--stamp);
+    color: var(--accent);
+  }
+
+  :global(:root[data-theme='dark']) .masthead-title::after {
+    opacity: 0.82;
+  }
+
+  @media (max-width: 40rem) {
+    .masthead {
+      padding-block: 0.75rem 2.5rem;
+    }
+
+    .masthead-title {
+      font-size: clamp(3rem, 16vw, 4rem);
+    }
+
+    .masthead-lede {
+      font-size: 1rem;
+    }
   }
 </style>

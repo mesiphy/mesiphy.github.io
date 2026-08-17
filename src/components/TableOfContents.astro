@@ -28,7 +28,7 @@ const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
 
 <style>
   .toc {
-    font-family: var(--font-mono);
+    font-family: var(--font-ui);
     font-size: 0.76rem;
     line-height: 1.6;
   }
@@ -67,13 +67,13 @@ const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
   }
 
   a[aria-current='true'] {
-    color: var(--stamp);
-    border-left-color: var(--stamp);
+    color: var(--accent);
+    border-left-color: var(--accent);
   }
 </style>
 
 <script>
-  // 滚动高亮当前小节。用 IntersectionObserver 而不是 scroll 事件，避免高频回调。
+  // 根据阅读位置高亮当前小节；用 requestAnimationFrame 合并滚动回调，避免高频重绘。
   const links = document.querySelectorAll<HTMLAnchorElement>('.toc a');
   if (links.length) {
     const byId = new Map<string, HTMLAnchorElement>();
@@ -81,32 +81,37 @@ const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
       byId.set(decodeURIComponent(link.hash.slice(1)), link);
     }
 
-    const visible = new Set<string>();
     const targets = [...byId.keys()]
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => el !== null);
 
     const paint = () => {
-      // 屏幕上可能同时有多个标题，取文档顺序里最靠前的那个
-      const active = targets.find((el) => visible.has(el.id));
+      const readingLine = 96;
+      let active: HTMLElement | undefined;
+      for (const target of targets) {
+        if (target.getBoundingClientRect().top <= readingLine) active = target;
+        else break;
+      }
+
       for (const [id, link] of byId) {
         if (active && id === active.id) link.setAttribute('aria-current', 'true');
         else link.removeAttribute('aria-current');
       }
     };
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) visible.add(entry.target.id);
-          else visible.delete(entry.target.id);
-        }
+    let scheduled = false;
+    const schedulePaint = () => {
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(() => {
+        scheduled = false;
         paint();
-      },
-      // 顶部留出 header 高度，底部收窄，让"当前小节"更符合直觉
-      { rootMargin: '-72px 0px -70% 0px' },
-    );
+      });
+    };
 
-    for (const target of targets) observer.observe(target);
+    addEventListener('scroll', schedulePaint, { passive: true });
+    addEventListener('resize', schedulePaint);
+    addEventListener('hashchange', schedulePaint);
+    schedulePaint();
   }
 </script>

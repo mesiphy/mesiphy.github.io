@@ -111,7 +111,7 @@ const loading = eager ? 'eager' : 'lazy';
     height: auto;
     border: 1px solid var(--rule);
     background: var(--paper-raised);
-    opacity: 0.94;
+    opacity: 0.92;
   }
 
   .graph-link {
@@ -120,7 +120,7 @@ const loading = eager ? 'eager' : 'lazy';
   }
 
   .graph-link:hover img {
-    border-color: var(--stamp);
+    border-color: var(--accent);
   }
 
   /* 暗色下生图模型基本都产出白底图，压一点亮度免得刺眼 */
@@ -134,7 +134,7 @@ const loading = eager ? 'eager' : 'lazy';
     justify-content: space-between;
     gap: 0.5rem;
     margin-bottom: 0.4rem;
-    font-family: var(--font-mono);
+    font-family: var(--font-ui);
     font-size: 0.75rem;
     letter-spacing: 0.03em;
   }
@@ -146,7 +146,7 @@ const loading = eager ? 'eager' : 'lazy';
   }
 
   .graph-name:hover {
-    color: var(--stamp);
+    color: var(--accent);
   }
 
   .graph-count {
@@ -173,7 +173,7 @@ const loading = eager ? 'eager' : 'lazy';
     justify-content: space-between;
     gap: 0.5rem;
     margin-top: 0.6rem;
-    font-family: var(--font-mono);
+    font-family: var(--font-ui);
     font-size: 0.72rem;
     letter-spacing: 0.04em;
     color: var(--ink-faint);
@@ -186,18 +186,19 @@ const loading = eager ? 'eager' : 'lazy';
   }
 
   .graph-cap a:hover {
-    color: var(--stamp);
+    color: var(--accent);
   }
 
   .graph-empty {
     margin: 0;
     padding: 1.1rem 0.75rem;
-    border: 1px dashed var(--rule);
-    font-family: var(--font-mono);
+    border: 1px dashed var(--rule-soft);
+    font-family: var(--font-ui);
     font-size: 0.72rem;
     line-height: 1.6;
-    color: var(--ink-faint);
+    color: color-mix(in srgb, var(--ink-faint) 76%, transparent);
     text-align: center;
+    opacity: 0.72;
   }
 
   .graph-empty-hint {
@@ -205,6 +206,7 @@ const loading = eager ? 'eager' : 'lazy';
     margin-top: 0.3rem;
     font-size: 0.62rem;
     word-break: break-all;
+    font-family: var(--font-mono);
   }
 
   .graph-full .graph-empty {
