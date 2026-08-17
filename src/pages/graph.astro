@@ -1,0 +1,81 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import KnowledgeGraph from '../components/KnowledgeGraph.astro';
+import { GRAPH } from '../consts';
+import { getPosts, groupByCategory } from '../lib/posts';
+import { getCategoryGraphs } from '../lib/graph';
+
+const posts = await getPosts();
+const grouped = groupByCategory(posts);
+const graphs = getCategoryGraphs(
+  new Map(grouped.map(({ category, posts: items }) => [category.name, items.length])),
+);
+---
+
+<BaseLayout title={GRAPH.title} description={GRAPH.description}>
+  <header class="head">
+    <h1>{GRAPH.title}</h1>
+    <p class="head-desc">{GRAPH.description}</p>
+  </header>
+
+  <hr class="rule-perforated" />
+
+  {/* 锚点对应首页右栏缩略图的链接，点进来直接落到那一张 */}
+  <div class="stack">
+    {
+      graphs.map((graph, i) => (
+        <section id={graph.category.slug} class="slot">
+          <KnowledgeGraph variant="full" {graph} eager={i === 0} />
+          <p class="slot-desc">{graph.category.description}</p>
+        </section>
+      ))
+    }
+  </div>
+
+  <p class="back"><a href="/posts/">按时间浏览全部文章 →</a></p>
+</BaseLayout>
+
+<style>
+  .head h1 {
+    font-size: clamp(1.6rem, 4.5vw, 2.1rem);
+    margin-bottom: 0.6rem;
+  }
+
+  .head-desc {
+    margin: 0;
+    max-width: var(--measure);
+    color: var(--ink-soft);
+  }
+
+  .stack {
+    display: grid;
+    gap: 3.5rem;
+  }
+
+  /* 锚点跳转时标题不要贴在报头底下 */
+  .slot {
+    scroll-margin-top: 2rem;
+  }
+
+  .slot-desc {
+    margin: 0.7rem 0 0;
+    max-width: var(--measure);
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+  }
+
+  .back {
+    margin: 3rem 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+  }
+
+  .back a {
+    text-decoration: none;
+    color: var(--ink-soft);
+  }
+
+  .back a:hover {
+    color: var(--stamp);
+  }
+</style>

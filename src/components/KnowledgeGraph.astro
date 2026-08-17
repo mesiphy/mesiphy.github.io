@@ -1,0 +1,218 @@
+---
+import { Image } from 'astro:assets';
+import { GRAPH } from '../consts';
+import { formatDate, isoDate } from '../lib/posts';
+import { widthsFor, type CategoryGraph } from '../lib/graph';
+
+interface Props {
+  /** rail = 首页右栏缩略图（可点进大图）；full = /graph/ 页的大图 */
+  variant?: 'rail' | 'full';
+  graph: CategoryGraph;
+  /** 抢先加载。只给首屏那一张用，其余保持懒加载 */
+  eager?: boolean;
+}
+
+const { variant = 'rail', graph, eager = false } = Astro.props;
+const { category, alt, count, image, expectedFile } = graph;
+
+// rail 栏宽 13rem ≈ 208px；full 走主列，按 --column 的上限 68rem ≈ 1100px 取样
+const displayWidth = variant === 'rail' ? 208 : 1100;
+const sizes = variant === 'rail' ? '208px' : '(min-width: 44rem) min(68rem, 50vw), 100vw';
+const categoryHref = `/categories/${category.slug}/`;
+const loading = eager ? 'eager' : 'lazy';
+---
+
+<figure class:list={['graph', `graph-${variant}`]}>
+  <figcaption class="graph-head">
+    <a href={categoryHref} class="graph-name">{category.name}</a>
+    <span class="graph-count">{String(count).padStart(2, '0')} 篇</span>
+  </figcaption>
+
+  {
+    image ? (
+      <>
+        {variant === 'rail' ? (
+          <a
+            href={`${GRAPH.href}#${category.slug}`}
+            class="graph-link"
+            aria-label={`查看大图：${category.name}`}
+          >
+            {image.isVector ? (
+              <img
+                src={image.src.src}
+                width={image.src.width}
+                height={image.src.height}
+                {alt}
+                {loading}
+                decoding="async"
+              />
+            ) : (
+              <Image
+                src={image.src}
+                {alt}
+                widths={widthsFor(displayWidth, image.src.width)}
+                {sizes}
+                {loading}
+                decoding="async"
+              />
+            )}
+          </a>
+        ) : image.isVector ? (
+          <img
+            src={image.src.src}
+            width={image.src.width}
+            height={image.src.height}
+            {alt}
+            decoding="async"
+          />
+        ) : (
+          <Image
+            src={image.src}
+            {alt}
+            widths={widthsFor(displayWidth, image.src.width)}
+            {sizes}
+            {loading}
+            decoding="async"
+          />
+        )}
+
+        {variant === 'full' && (
+          <figcaption class="graph-cap">
+            <span>
+              {image.updated && (
+                <>
+                  更新于 <time datetime={isoDate(image.updated)}>{formatDate(image.updated)}</time>
+                </>
+              )}
+            </span>
+            <a href={image.src.src} target="_blank" rel="noopener">
+              查看原图 ↗
+            </a>
+          </figcaption>
+        )}
+      </>
+    ) : (
+      <p class="graph-empty">
+        待生成
+        <span class="graph-empty-hint">{expectedFile}</span>
+      </p>
+    )
+  }
+</figure>
+
+<style>
+  .graph {
+    margin: 0;
+  }
+
+  .graph img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--rule);
+    background: var(--paper-raised);
+    opacity: 0.94;
+  }
+
+  .graph-link {
+    display: block;
+    text-decoration: none;
+  }
+
+  .graph-link:hover img {
+    border-color: var(--stamp);
+  }
+
+  /* 暗色下生图模型基本都产出白底图，压一点亮度免得刺眼 */
+  :root[data-theme='dark'] .graph img {
+    filter: brightness(0.88) contrast(1.04);
+  }
+
+  .graph-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.03em;
+  }
+
+  .graph-name {
+    font-weight: 700;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .graph-name:hover {
+    color: var(--stamp);
+  }
+
+  .graph-count {
+    font-size: 0.68rem;
+    color: var(--ink-faint);
+    white-space: nowrap;
+  }
+
+  .graph-full .graph-head {
+    font-size: 0.95rem;
+    margin-bottom: 0.6rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .graph-full .graph-count {
+    font-size: 0.74rem;
+  }
+
+  .graph-cap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--ink-faint);
+  }
+
+  .graph-cap a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .graph-cap a:hover {
+    color: var(--stamp);
+  }
+
+  .graph-empty {
+    margin: 0;
+    padding: 1.1rem 0.75rem;
+    border: 1px dashed var(--rule);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.6;
+    color: var(--ink-faint);
+    text-align: center;
+  }
+
+  .graph-empty-hint {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: 0.62rem;
+    word-break: break-all;
+  }
+
+  .graph-full .graph-empty {
+    padding: 2.5rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .graph-full .graph-empty-hint {
+    font-size: 0.72rem;
+  }
+</style>

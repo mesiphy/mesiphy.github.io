@@ -1,58 +1,167 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PostCard from '../components/PostCard.astro';
-import { SITE_TITLE } from '../consts';
+import KnowledgeGraph from '../components/KnowledgeGraph.astro';
+import { SITE_TITLE, GRAPH } from '../consts';
 import { getPosts, groupByCategory } from '../lib/posts';
+import { getCategoryGraphs } from '../lib/graph';
 
 const posts = await getPosts();
 const latest = posts.slice(0, 5);
 const grouped = groupByCategory(posts);
+const graphs = getCategoryGraphs(
+  new Map(grouped.map(({ category, posts: items }) => [category.name, items.length])),
+);
 ---
 
-<BaseLayout title={SITE_TITLE}>
-  <section class="masthead">
-    <p class="masthead-kicker">学习记录 · 作品集 · 技术分享</p>
-    <h1 class="masthead-title">{SITE_TITLE}</h1>
-    <p class="masthead-lede">
-      写给自己的第一读者。把读过的书、写过的代码、想清楚的产品问题留在这里，
-      顺便让它们变得对别人也有用。
-    </p>
-  </section>
+{/* fullWidth：首页自己用网格排主列和右栏，不要外层再限宽 */}
+<BaseLayout title={SITE_TITLE} fullWidth>
+  <div class="home">
+    <section class="masthead">
+      <p class="masthead-kicker">学习记录 · 作品集 · 技术分享</p>
+      <h1 class="masthead-title">{SITE_TITLE}</h1>
+      <p class="masthead-lede">
+        写给自己的第一读者。把读过的书、写过的代码、想清楚的产品问题留在这里，
+        顺便让它们变得对别人也有用。
+      </p>
+    </section>
 
-  <hr class="rule-perforated" />
-
-  <section class="categories" aria-label="栏目">
-    {
-      grouped.map(({ category, posts: items }) => (
-        <a href={`/categories/${category.slug}/`} class="cat">
-          <span class="cat-name">{category.name}</span>
-          <span class="cat-desc">{category.description}</span>
-          <span class="cat-count">{String(items.length).padStart(2, '0')} 篇</span>
-        </a>
-      ))
-    }
-  </section>
-
-  <section class="latest">
-    <h2 class="section-title">最新</h2>
-    {
-      latest.length > 0 ? (
-        latest.map((post) => <PostCard {post} />)
-      ) : (
-        <p class="empty-note">还没有文章。在 content/posts/ 里新建一个 .md 文件就能发布。</p>
-      )
-    }
-    {
-      posts.length > latest.length && (
-        <p class="more">
-          <a href="/posts/">查看全部 {posts.length} 篇 →</a>
+    {/* 宽屏时贴在右栏顶部，窄屏时落到页面末尾当一张站点地图 */}
+    <aside class="rail" aria-label={GRAPH.title}>
+      <div class="rail-inner">
+        <h2 class="section-title">{GRAPH.title}</h2>
+        <div class="rail-stack">
+          {graphs.map((graph) => <KnowledgeGraph variant="rail" {graph} />)}
+        </div>
+        <p class="rail-note">
+          <a href={GRAPH.href}>看大图 →</a>
         </p>
-      )
-    }
-  </section>
+      </div>
+    </aside>
+
+    <div class="main">
+      <hr class="rule-perforated" />
+
+      <section class="categories" aria-label="栏目">
+        {
+          grouped.map(({ category, posts: items }) => (
+            <a href={`/categories/${category.slug}/`} class="cat">
+              <span class="cat-name">{category.name}</span>
+              <span class="cat-desc">{category.description}</span>
+              <span class="cat-count">{String(items.length).padStart(2, '0')} 篇</span>
+            </a>
+          ))
+        }
+      </section>
+
+      <section class="latest">
+        <h2 class="section-title">最新</h2>
+        {
+          latest.length > 0 ? (
+            latest.map((post) => <PostCard {post} />)
+          ) : (
+            <p class="empty-note">还没有文章。在 content/posts/ 里新建一个 .md 文件就能发布。</p>
+          )
+        }
+        {
+          posts.length > latest.length && (
+            <p class="more">
+              <a href="/posts/">查看全部 {posts.length} 篇 →</a>
+            </p>
+          )
+        }
+      </section>
+    </div>
+  </div>
 </BaseLayout>
 
 <style>
+  /* 窄屏：单列，脉络图排在最后。
+     宽屏：右栏跟文章页的目录栏同宽同位置，页面之间才不会横向错位 */
+  .home {
+    display: grid;
+    gap: 0 3rem;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'masthead'
+      'main'
+      'rail';
+  }
+
+  @media (min-width: 67rem) {
+    .home {
+      grid-template-columns: minmax(0, var(--column)) 13rem;
+      grid-template-areas:
+        'masthead rail'
+        'main     rail';
+      justify-content: start;
+    }
+  }
+
+  .masthead {
+    grid-area: masthead;
+  }
+
+  .main {
+    grid-area: main;
+    min-width: 0;
+  }
+
+  .rail {
+    grid-area: rail;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px dashed var(--rule);
+  }
+
+  @media (min-width: 67rem) {
+    .rail {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: 0;
+    }
+
+    /* 三张图叠起来可能比视口高，超出部分让它自己滚，
+       跟文章页的目录栏一个处理 */
+    .rail-inner {
+      position: sticky;
+      top: 5rem;
+      max-height: calc(100vh - 7rem);
+      overflow-y: auto;
+    }
+  }
+
+  .rail-stack {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  /* 窄屏下图片会被拉到整页宽，一张树状图撑那么大没意义，收一收 */
+  .rail-inner {
+    max-width: 22rem;
+  }
+
+  @media (min-width: 67rem) {
+    .rail-inner {
+      max-width: none;
+    }
+  }
+
+  .rail-note {
+    margin: 1.25rem 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+  }
+
+  .rail-note a {
+    color: var(--ink-soft);
+    text-decoration: none;
+  }
+
+  .rail-note a:hover {
+    color: var(--stamp);
+  }
+
   .masthead {
     padding-block: 1rem 2rem;
   }
@@ -79,9 +188,7 @@ const grouped = groupByCategory(posts);
 
   .categories {
     display: grid;
-    gap: 1px;
-    background: var(--rule);
-    border: 1px solid var(--rule);
+    border-block: 1px solid var(--rule);
     margin-bottom: 3rem;
   }
 
@@ -89,16 +196,30 @@ const grouped = groupByCategory(posts);
     .categories {
       grid-template-columns: repeat(3, 1fr);
     }
+
+    .cat + .cat {
+      border-left: 1px dashed var(--rule);
+    }
   }
 
   .cat {
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
-    padding: 1.1rem 1rem;
-    background: var(--paper);
+    padding: 1.35rem 1rem;
+    background: transparent;
     text-decoration: none;
     transition: background 0.15s ease;
+  }
+
+  .cat + .cat {
+    border-top: 1px dashed var(--rule);
+  }
+
+  @media (min-width: 40rem) {
+    .cat + .cat {
+      border-top: 0;
+    }
   }
 
   .cat:hover {
@@ -106,9 +227,9 @@ const grouped = groupByCategory(posts);
   }
 
   .cat-name {
-    font-family: var(--font-mono);
-    font-size: 0.9rem;
-    font-weight: 700;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
     color: var(--ink);
   }
 
