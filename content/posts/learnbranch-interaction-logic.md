@@ -15,7 +15,7 @@ AI 产品最危险的交互文档，是只画一条“输入—生成—展示�
 
 Learner 是唯一改变学习判断的人；DeepSeek 只提供生成结果；Vault 保存权威 Markdown；操作系统凭据库保存 API Key；Obsidian 是可选的外部阅读与编辑器，不是 LearnBranch 的运行前提。
 
-```text
+```plantuml 系统边界与参与者
 @startuml
 left to right direction
 actor Learner
@@ -65,7 +65,7 @@ Obsidian --> Vault
 
 ## 二、领域类图：树、草稿和派生输出
 
-```text
+```plantuml 领域类图：树、草稿和派生输出
 @startuml
 class LearningSession {
   +id: UUID
@@ -119,7 +119,7 @@ LearningSession "1" --> "0..*" DerivedOutput
 
 ## 三、核心活动图：从历史节点创建分支
 
-```text
+```plantuml 核心活动图：从历史节点创建分支
 @startuml
 start
 :用户在右图选择一个节点;
@@ -157,7 +157,7 @@ stop
 
 ### 4.1 生成状态
 
-```text
+```plantuml 生成状态机
 @startuml
 [*] --> draft : 创建节点
 draft --> generating : 请求已登记并落盘
@@ -179,7 +179,7 @@ state ready {
 
 ### 4.2 学习状态
 
-```text
+```plantuml 学习状态机
 @startuml
 [*] --> todo
 todo --> exploring : 用户开始学习\n或生成成功后进入探索
@@ -195,7 +195,7 @@ understood --> exploring : 重新打开探索
 
 ## 五、时序图：一次成功分支如何跨越 UI、Rust、API 与磁盘
 
-```text
+```plantuml 成功创建分支的时序图
 @startuml
 actor Learner
 participant "React UI" as UI
@@ -230,7 +230,7 @@ UI --> Learner : 选中新节点，展示待审核草稿
 
 ## 六、审核草稿的活动与决策
 
-```text
+```plantuml 审核草稿活动图
 @startuml
 start
 :打开待审核节点;

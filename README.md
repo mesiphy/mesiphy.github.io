@@ -87,6 +87,23 @@ frontmatter 字段说明：
 
 正文里引用图片：把图放进 `public/`，然后写 `![说明](/图片名.png)`，路径以 `/` 开头。
 
+### 文本图表
+
+站点会把带语言标记的图表代码块渲染成 SVG，并在图下保留可折叠、可复制的源码。例如：
+
+````markdown
+```plantuml 用户登录时序图
+@startuml
+User -> App: 登录
+App --> User: 登录成功
+@enduml
+```
+````
+
+常用标记包括 `plantuml` / `puml` / `uml`、`mermaid`、`graphviz` / `dot`、`d2`、`vega` / `vega-lite`、`wavedrom` 等。语言标记后的文字会成为图注和图片替代文本。旧文章里标成 `text`、但内容以 `@startuml` 等 PlantUML 指令开头的代码块也会兼容渲染。
+
+图表由 [Kroki](https://kroki.io/) 统一生成，默认服务地址是 `https://kroki.io`。如果希望图表源码不发送给公共服务，可以部署自己的 Kroki，并在构建时设置 `KROKI_BASE_URL`。
+
 ## 更新知识脉络图
 
 每个栏目一张图，外部用生图模型画好后放进 `src/assets/graph/`，**按栏目 slug 命名**：
