@@ -1,6 +1,7 @@
 ---
 title: LearnBranch 交互逻辑：用 UML 拆解分支问答的状态与边界
 date: 2026-08-19
+updated: 2026-08-25
 description: 用用例图、类图、活动图、状态机和时序图描述 LearnBranch 的核心交互，并补充产品交互矩阵、异常路径与验收规则。
 category: AI产品经理的思考
 tags: [LearnBranch, UML, 交互设计, 状态机, 产品设计]
@@ -8,6 +9,8 @@ draft: false
 ---
 
 AI 产品最危险的交互文档，是只画一条“输入—生成—展示”的快乐路径。真实用户会重复点击、切换节点、关闭应用、在 Obsidian 中改文件，也会遇到断网、迟到响应和半完成删除。若这些状态没有被建模，工程实现只能在异常发生时临时猜测。
+
+这篇专题属于 [LearnBranch 产品工程案例](/projects/learnbranch/) 的交互设计部分；案例页同时展示产品演进、AI 分工和真实验收证据。
 
 本文用 PlantUML 表达 LearnBranch 当前 Tauri 主线的用例、领域对象、活动、状态与时序。代码块本身就是可复制的 UML 源模型；随后再用产品岗位常用的交互矩阵、决策表和 Given-When-Then 验收补足界面细节。
 

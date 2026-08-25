@@ -1,0 +1,939 @@
+---
+import ProjectLayout from '../../layouts/ProjectLayout.astro';
+
+const title = 'LearnBranch：AI 产品工程案例';
+const description =
+  '从真实学习痛点出发，由 ChatGPT 与 Codex 协作完成，并经过人工验收的 LearnBranch 产品工程案例。';
+const image = '/projects/learnbranch/workspace.png';
+
+const repository = 'https://github.com/mesiphy/graphlearning';
+const documents = `${repository}/tree/main/docs/case-study`;
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'LearnBranch',
+  description,
+  applicationCategory: 'EducationalApplication',
+  operatingSystem: 'Windows 11 x64',
+  softwareVersion: '0.1 开发版',
+  codeRepository: repository,
+  author: {
+    '@type': 'Person',
+    name: 'mesiphy',
+    url: 'https://mesiphy.github.io/about/',
+  },
+};
+---
+
+<ProjectLayout {title} {description} {image}>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+
+  <header class="hero">
+    <div class="hero-copy">
+      <h1>LearnBranch</h1>
+      <p class="hero-title">把线性的 AI 对话，变成可追溯的学习树</p>
+      <p class="hero-lede">
+        一个从真实学习痛点出发，由 ChatGPT 与 Codex 协作完成，并经过人工验收的产品工程案例。
+      </p>
+      <p class="hero-role">我的角色：产品定义 · AI 协作编排 · 人工验收</p>
+      <div class="hero-actions">
+        <a class="action-primary" href={documents}>查看完整文档</a>
+        <a href={repository}>查看源代码</a>
+      </div>
+    </div>
+
+    <figure class="hero-proof">
+      <img
+        src="/projects/learnbranch/workspace.png"
+        width="1282"
+        height="832"
+        alt="LearnBranch 水彩主题桌面应用：左侧会话列表、中部节点详情、右侧学习图谱"
+      />
+      <figcaption>真实产品基线 · Windows 11 x64 · 2026-08-25</figcaption>
+    </figure>
+  </header>
+
+  <section class="case-section problem" aria-labelledby="problem-title">
+    <div class="section-number">01 / 问题定义</div>
+    <div class="section-intro">
+      <h2 id="problem-title">一次追问，会挤走另一条同样重要的路</h2>
+      <p>
+        学习陌生领域时，我常从一个问题进入 AI 对话。回答里又出现多个需要追问的知识点：继续深入其中一个，其他岔路便被线性消息流淹没；多轮对话还会持续累积上下文，让回答越来越难以约束。
+      </p>
+    </div>
+
+    <div class="problem-contrast">
+      <div class="problem-column">
+        <p class="eyebrow">线性对话</p>
+        <ol class="chat-stream" aria-label="线性对话问题示意">
+          <li>起始问题</li>
+          <li>回答同时出现 A / B / C</li>
+          <li>继续追问 A</li>
+          <li>再寻找 B 的来源</li>
+        </ol>
+        <p class="annotation">上下文不断堆叠，位置与来源越来越难回看。</p>
+      </div>
+
+      <div class="turn-arrow" aria-hidden="true">→</div>
+
+      <div class="problem-column tree-column">
+        <p class="eyebrow">学习树</p>
+        <svg class="mini-tree" viewBox="0 0 420 210" role="img" aria-label="从一个根问题向多个方向展开的学习树">
+          <g class="tree-lines">
+            <path d="M210 34 L120 94 M210 34 L210 94 M210 34 L300 94" />
+            <path d="M120 94 L76 166 M120 94 L150 166 M300 94 L266 166 M300 94 L344 166" />
+          </g>
+          <g class="tree-nodes">
+            <circle cx="210" cy="34" r="17" class="node-root" />
+            <circle cx="120" cy="94" r="14" />
+            <circle cx="210" cy="94" r="14" />
+            <circle cx="300" cy="94" r="14" class="node-warm" />
+            <circle cx="76" cy="166" r="11" />
+            <circle cx="150" cy="166" r="11" />
+            <circle cx="266" cy="166" r="11" class="node-warm" />
+            <circle cx="344" cy="166" r="11" />
+          </g>
+        </svg>
+        <p class="annotation">从任意回答继续分支，只继承当前节点的祖先链。</p>
+      </div>
+    </div>
+
+    <blockquote>
+      产品设想不是“给聊天套一张漂亮的图”，而是让每次追问成为有来源、有状态、可审核、可整理的学习节点。
+    </blockquote>
+  </section>
+
+  <section class="case-section solution" aria-labelledby="solution-title">
+    <div class="section-number">02 / 产品解法与真实演进</div>
+    <div class="section-intro">
+      <h2 id="solution-title">先实现功能，再发现体验边界</h2>
+      <p>
+        项目没有沿着一条预设路线完成。Obsidian 插件先证明 Markdown、祖先链上下文和 Canvas 输出可行；HTML 原型暴露图谱挤压阅读空间的问题；最终转向 Tauri，让详情成为主工作区，图谱退到右侧承担定位。
+      </p>
+    </div>
+
+    <ol class="timeline" aria-label="LearnBranch 产品演进时间线">
+      <li><span>2026-07</span><strong>产品设想</strong><small>线性对话的分支与回溯问题</small></li>
+      <li><span>2026-07</span><strong>Obsidian 插件 MVP</strong><small>先验证本地数据与上下文规则</small></li>
+      <li><span>2026-08</span><strong>竞品与 HTML 原型</strong><small>验证三栏工作区和 S1～S6 流程</small></li>
+      <li class="timeline-turn"><span>2026-08-12</span><strong>Tauri 架构转向</strong><small>图谱主导改为详情优先</small></li>
+      <li><span>2026-08</span><strong>Windows 原生验收</strong><small>M1～M3 关闭技术交付风险</small></li>
+    </ol>
+
+    <div class="evolution-media">
+      <figure>
+        <img
+          src="/projects/learnbranch/chatgpt-sketch.png"
+          width="1536"
+          height="1024"
+          loading="lazy"
+          alt="ChatGPT 生成的 LearnBranch 早期界面草图"
+        />
+        <figcaption>ChatGPT 早期草图：图谱是主视觉对象</figcaption>
+      </figure>
+      <figure>
+        <img
+          src="/projects/learnbranch/workspace.png"
+          width="1282"
+          height="832"
+          loading="lazy"
+          alt="LearnBranch 最终详情优先工作区"
+        />
+        <figcaption>Tauri 成品：长文本阅读在中部，图谱成为右侧导航</figcaption>
+      </figure>
+    </div>
+
+    <figure class="wide-proof historical-proof">
+      <img
+        src="/projects/learnbranch/html-prototype.png"
+        width="1440"
+        height="900"
+        loading="lazy"
+        alt="Codex 实现的 LearnBranch 早期 HTML 原型，图谱占据主工作区，详情位于右侧"
+      />
+      <figcaption>可点击 HTML 原型：它暴露了图谱占据主区、长内容被挤到右侧的阅读问题</figcaption>
+    </figure>
+
+    <div class="product-principles">
+      <div><strong>任意节点分支</strong><span>追问属于当前节点，不属于一个全局输入框。</span></div>
+      <div><strong>祖先链上下文</strong><span>兄弟分支不会被偷偷带入模型请求。</span></div>
+      <div><strong>AI 草稿先审核</strong><span>用户确认后，内容才进入长期记录。</span></div>
+      <div><strong>发散后重新收敛</strong><span>输出 Markdown 总结与 JSON Canvas。</span></div>
+    </div>
+
+    <figure class="wide-proof">
+      <img
+        src="/projects/learnbranch/create-branch.png"
+        width="1282"
+        height="832"
+        loading="lazy"
+        alt="LearnBranch 从当前节点创建分支的真实界面"
+      />
+      <figcaption>真实交互：分支从当前节点发起，完整问题与短标题分别服务模型和图谱。</figcaption>
+    </figure>
+  </section>
+
+  <section class="case-section collaboration" aria-labelledby="collaboration-title">
+    <div class="section-number">03 / AI 协作方法</div>
+    <div class="section-intro">
+      <h2 id="collaboration-title">AI 生成了大部分代码，但没有替我承担产品责任</h2>
+      <p>
+        原始开发对话没有完整保留，因此这里不补写“精彩提示词”。可验证的事实是：ChatGPT 参与产品拆解、文档与原型图；Codex 把文档和原型转成 HTML、技术方案、代码与测试；我负责问题定义、边界取舍、阅读代码和真实 Windows 验收。
+      </p>
+    </div>
+
+    <div class="roles" aria-label="ChatGPT、Codex 与人工验收职责">
+      <div class="role-block role-chatgpt">
+        <span class="role-index">A</span>
+        <h3>ChatGPT</h3>
+        <p>产品讨论、文档结构、竞品问题框架、界面草图。</p>
+        <small>输出：可交接的产品上下文</small>
+      </div>
+      <div class="role-connector" aria-hidden="true">→</div>
+      <div class="role-block role-codex">
+        <span class="role-index">B</span>
+        <h3>Codex</h3>
+        <p>HTML 原型、技术方案、实现、自动检查与修复。</p>
+        <small>输出：可运行、可检查的候选结果</small>
+      </div>
+      <div class="role-connector" aria-hidden="true">→</div>
+      <div class="role-block role-human">
+        <span class="role-index">C</span>
+        <h3>人工验收</h3>
+        <p>启动应用、点击功能、输入真实问题、检查文件、安装与卸载。</p>
+        <small>输出：通过、修订或推翻</small>
+      </div>
+    </div>
+
+    <div class="feedback-loop">
+      <svg viewBox="0 0 920 132" role="img" aria-label="从产品上下文到 AI 实现，再由人工证据反馈到下一轮的闭环">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" />
+          </marker>
+        </defs>
+        <path class="loop-line" d="M80 44 H840" marker-end="url(#arrow)" />
+        <path class="loop-line loop-return" d="M840 86 C650 132 270 132 80 86" marker-end="url(#arrow)" />
+        <text x="80" y="30">上下文包</text>
+        <text x="376" y="30">实现与检查</text>
+        <text x="744" y="30">人工证据</text>
+        <text x="358" y="122">问题被改写为下一轮约束</text>
+      </svg>
+    </div>
+
+    <div class="truth-note">
+      <strong>证据口径</strong>
+      <p>
+        没有保存的原始提示词只标为“重建任务说明”；产品内部使用的 DeepSeek 与开发协作中的 ChatGPT / Codex 分开描述；AI 输出不等于完成，阶段退出门必须包含可运行产物与人工证据。
+      </p>
+    </div>
+
+    <div class="review-pair">
+      <figure>
+        <img
+          src="/projects/learnbranch/markdown-review.png"
+          width="1282"
+          height="832"
+          loading="lazy"
+          alt="LearnBranch 已确认节点的 Markdown 编辑与预览界面"
+        />
+        <figcaption>同一编辑器也承担 AI 草稿审核；图中为已确认节点的 Markdown 编辑状态。</figcaption>
+      </figure>
+      <figure>
+        <img
+          src="/projects/learnbranch/graph-legend.png"
+          width="1282"
+          height="832"
+          loading="lazy"
+          alt="LearnBranch 学习图谱、方向箭头、节点标签与图例"
+        />
+        <figcaption>图谱方向、标签和状态图例经过独立可读性修订。</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="case-section evidence" aria-labelledby="evidence-title">
+    <div class="section-number">04 / 交付证据与当前边界</div>
+    <div class="section-intro">
+      <h2 id="evidence-title">能展示的不是一个数字，而是一条可复验的证据链</h2>
+      <p>当前成果达到“开发版技术闭环”，不把技术验收写成市场验证。完整命令、提交、ADR、测试和验收记录都可沿 GitHub 文档继续检查。</p>
+    </div>
+
+    <div class="evidence-table-wrap">
+      <table class="evidence-table">
+        <thead>
+          <tr><th>关口</th><th>已验证</th><th>证据</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>产品基线</td><td>图谱方向、字体、标签与图例改进</td><td><a href={`${repository}/commit/8fc09d71c726c5dd300bd9e5d50759288424da86`}>提交 8fc09d7</a></td></tr>
+          <tr><td>自动门禁</td><td>前端、Rust、格式、类型、构建与安全检查</td><td><a href={`${documents}/07-development-validation.md`}>2026-08-25 记录</a></td></tr>
+          <tr><td>M1</td><td>真实问答、草稿审核、失败恢复与整理来源</td><td><a href={`${repository}/blob/main/docs/m1-native-acceptance-2026-08-18.md`}>原生闭环验收</a></td></tr>
+          <tr><td>M2</td><td>Markdown、Canvas、旧数据导入与 Obsidian 打开</td><td><a href={`${repository}/blob/main/docs/m2-data-obsidian-acceptance-2026-08-18.md`}>数据互操作验收</a></td></tr>
+          <tr><td>M3</td><td>安装、升级阻断、卸载重装与数据保留</td><td><a href={`${repository}/blob/main/docs/m3-windows-distribution-acceptance-2026-08-19.md`}>Windows 分发验收</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="boundary-block" aria-labelledby="boundary-title">
+      <h3 id="boundary-title">当前边界</h3>
+      <ul>
+        <li>尚未完成真实用户 Alpha。</li>
+        <li>尚未验证 30～50 节点与长期使用价值。</li>
+        <li>当前发布与验收范围仅为 Windows 11 x64。</li>
+        <li>代码尚未选择开源许可证，仓库状态为 <code>UNLICENSED</code>。</li>
+      </ul>
+    </div>
+
+    <div class="reflection">
+      <p class="eyebrow">复盘</p>
+      <blockquote>
+        这次最重要的转向，不是从 Obsidian 换成 Tauri，而是从“图谱就是产品”转向“用户能否读清、判断并带走知识才是产品”。
+      </blockquote>
+      <p>
+        AI 让我能够更快跨越产品、原型、React、Rust 与 Windows 分发，但也把责任集中到上下文质量和验收质量上。下一轮 Alpha 的重点不再是继续增加功能，而是验证：真实用户是否愿意持续维护一棵学习树，以及审核步骤究竟带来控制感还是负担。
+      </p>
+    </div>
+  </section>
+
+  <section class="case-section reading" aria-labelledby="reading-title">
+    <div class="section-number">05 / 深入阅读</div>
+    <h2 id="reading-title">完整材料与专题文章</h2>
+    <div class="reading-links">
+      <a href={documents}><strong>完整案例文档</strong><span>PRD、竞品、UML、AI 协作、验证与证据索引</span></a>
+      <a href="/posts/learnbranch-building-process/"><strong>构建实录</strong><span>从 Obsidian 插件到 Tauri 桌面应用</span></a>
+      <a href="/posts/learnbranch-prd/"><strong>PRD</strong><span>实现后校准的产品范围与发布门禁</span></a>
+      <a href="/posts/learnbranch-competitive-analysis/"><strong>竞品分析</strong><span>从产品对象而非功能数量确认定位</span></a>
+      <a href="/posts/learnbranch-interaction-logic/"><strong>交互与 UML</strong><span>状态、异常与分支问答边界</span></a>
+      <a href={repository}><strong>源代码仓库</strong><span>当前实现、历史材料与验收记录</span></a>
+    </div>
+  </section>
+</ProjectLayout>
+
+<style>
+  .hero,
+  .case-section {
+    max-width: 78rem;
+    margin-inline: auto;
+  }
+
+  .hero {
+    display: grid;
+    gap: 2.25rem;
+    align-items: center;
+    padding-block: 1.25rem 4.5rem;
+  }
+
+  .hero-copy,
+  .hero-proof {
+    min-width: 0;
+  }
+
+  @media (min-width: 62rem) {
+    .hero {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+      min-height: min(48rem, calc(100vh - 11rem));
+    }
+  }
+
+  .hero h1 {
+    position: relative;
+    isolation: isolate;
+    display: inline-block;
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.08em;
+    font-size: clamp(3.5rem, 5vw, 4.05rem);
+    line-height: 1;
+    letter-spacing: 0.015em;
+  }
+
+  .hero h1::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    left: -0.02em;
+    right: -0.08em;
+    bottom: -0.03em;
+    height: 0.18em;
+    background: var(--title-brush) center / 100% 100% no-repeat;
+    opacity: 0.76;
+  }
+
+  .hero-title {
+    max-width: 15em;
+    margin: 0 0 1.15rem;
+    font-size: clamp(1.55rem, 3vw, 2.35rem);
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+
+  .hero-lede {
+    max-width: 34em;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    line-height: 1.9;
+    color: var(--ink-soft);
+  }
+
+  .hero-role {
+    margin-bottom: 1.3rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: var(--ink-faint);
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+  }
+
+  .hero-actions a {
+    padding: 0.55rem 0.8rem;
+    border: 1px solid var(--rule);
+    font-family: var(--font-ui);
+    font-size: 0.8rem;
+    text-decoration: none;
+    background: var(--paper-raised);
+  }
+
+  .hero-actions .action-primary {
+    border-color: var(--accent-warm);
+    color: var(--paper);
+    background: var(--accent-warm);
+  }
+
+  .hero-proof,
+  .wide-proof,
+  .evolution-media figure,
+  .review-pair figure {
+    margin: 0;
+  }
+
+  .hero-proof img,
+  .wide-proof img,
+  .evolution-media img,
+  .review-pair img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--rule);
+    box-shadow: 0 1.1rem 3rem rgb(15 34 49 / 0.11);
+  }
+
+  figure figcaption {
+    margin-top: 0.55rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    line-height: 1.6;
+    color: var(--ink-faint);
+  }
+
+  .case-section {
+    position: relative;
+    padding-block: 4.5rem;
+    border-top: 1px dashed var(--rule);
+  }
+
+  .section-number,
+  .eyebrow {
+    margin-bottom: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    color: var(--accent-warm);
+  }
+
+  .section-intro {
+    display: grid;
+    gap: 1rem 3rem;
+    margin-bottom: 2.8rem;
+  }
+
+  @media (min-width: 54rem) {
+    .section-intro {
+      grid-template-columns: minmax(17rem, 0.8fr) minmax(26rem, 1.2fr);
+      align-items: start;
+    }
+  }
+
+  .section-intro h2,
+  .reading h2 {
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.28;
+  }
+
+  .section-intro p {
+    max-width: 44em;
+    margin: 0;
+    color: var(--ink-soft);
+    line-height: 2;
+  }
+
+  .problem-contrast {
+    display: grid;
+    gap: 1.4rem;
+    align-items: center;
+    margin: 0 0 2rem;
+    padding: 1.5rem 0;
+    border-block: 3px double var(--rule);
+  }
+
+  @media (min-width: 48rem) {
+    .problem-contrast {
+      grid-template-columns: 1fr auto 1fr;
+    }
+  }
+
+  .problem-column {
+    min-width: 0;
+  }
+
+  .chat-stream {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: chat;
+  }
+
+  .chat-stream li {
+    counter-increment: chat;
+    padding: 0.6rem 0.8rem;
+    border-left: 2px solid var(--rule);
+    background: var(--paper-raised);
+    font-size: 0.86rem;
+  }
+
+  .chat-stream li::before {
+    content: '0' counter(chat) '  ';
+    font-family: var(--font-mono);
+    color: var(--ink-faint);
+  }
+
+  .turn-arrow {
+    color: var(--accent);
+    font-size: 2.4rem;
+    transform: rotate(90deg);
+    text-align: center;
+  }
+
+  @media (min-width: 48rem) {
+    .turn-arrow {
+      transform: none;
+    }
+  }
+
+  .mini-tree {
+    display: block;
+    width: 100%;
+    max-height: 13rem;
+  }
+
+  .tree-lines path {
+    fill: none;
+    stroke: var(--ink-muted);
+    stroke-width: 2;
+  }
+
+  .tree-nodes circle {
+    fill: var(--paper);
+    stroke: var(--accent);
+    stroke-width: 3;
+  }
+
+  .tree-nodes .node-root {
+    fill: var(--accent);
+    stroke: var(--ink);
+  }
+
+  .tree-nodes .node-warm {
+    fill: var(--accent-warm);
+    stroke: var(--ink);
+  }
+
+  .annotation {
+    margin: 0.75rem 0 0;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+  }
+
+  .problem blockquote,
+  .reflection blockquote {
+    max-width: 48rem;
+    margin: 0;
+    padding-left: 1.25rem;
+    border-left: 3px solid var(--accent);
+    font-size: clamp(1.2rem, 2.3vw, 1.7rem);
+    line-height: 1.75;
+  }
+
+  .timeline {
+    display: grid;
+    margin: 0 0 3rem;
+    padding: 0;
+    list-style: none;
+    border-block: 1px solid var(--rule);
+  }
+
+  @media (min-width: 65rem) {
+    .timeline {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+
+  .timeline li {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 0.45rem;
+    min-height: 8.5rem;
+    padding: 1.1rem;
+    border-bottom: 1px dashed var(--rule);
+  }
+
+  @media (min-width: 65rem) {
+    .timeline li {
+      border-right: 1px dashed var(--rule);
+      border-bottom: 0;
+    }
+  }
+
+  .timeline li:last-child {
+    border: 0;
+  }
+
+  .timeline span,
+  .timeline small {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--ink-faint);
+  }
+
+  .timeline strong {
+    font-size: 0.92rem;
+  }
+
+  .timeline-turn strong,
+  .timeline-turn span {
+    color: var(--accent-warm);
+  }
+
+  .evolution-media,
+  .review-pair {
+    display: grid;
+    gap: 1.4rem;
+    margin-bottom: 2.5rem;
+  }
+
+  @media (min-width: 50rem) {
+    .evolution-media,
+    .review-pair {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .evolution-media figure:first-child img {
+    aspect-ratio: 1.54;
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  .product-principles {
+    display: grid;
+    margin: 0 0 2.5rem;
+    border-block: 1px solid var(--rule);
+  }
+
+  @media (min-width: 48rem) {
+    .product-principles {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .product-principles div {
+    display: grid;
+    gap: 0.35rem;
+    padding: 1.15rem;
+    border-bottom: 1px dashed var(--rule);
+  }
+
+  @media (min-width: 48rem) {
+    .product-principles div:nth-child(odd) {
+      border-right: 1px dashed var(--rule);
+    }
+  }
+
+  .product-principles span {
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+  }
+
+  .wide-proof {
+    max-width: 63rem;
+    margin-inline: auto;
+  }
+
+  .roles {
+    display: grid;
+    gap: 0.8rem;
+    align-items: stretch;
+    margin-bottom: 1rem;
+  }
+
+  @media (min-width: 60rem) {
+    .roles {
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      align-items: center;
+    }
+  }
+
+  .role-block {
+    min-height: 13rem;
+    padding: 1.3rem;
+    border: 1px solid var(--rule);
+    background: var(--paper-raised);
+  }
+
+  .role-index {
+    display: inline-grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    margin-bottom: 1rem;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    font-family: var(--font-mono);
+    color: var(--accent);
+  }
+
+  .role-human .role-index {
+    color: var(--accent-warm);
+  }
+
+  .role-block h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.35rem;
+  }
+
+  .role-block p {
+    margin-bottom: 0.8rem;
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+  }
+
+  .role-block small {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--ink-faint);
+  }
+
+  .role-connector {
+    color: var(--accent);
+    font-size: 1.8rem;
+    text-align: center;
+    transform: rotate(90deg);
+  }
+
+  @media (min-width: 60rem) {
+    .role-connector {
+      transform: none;
+    }
+  }
+
+  .feedback-loop {
+    overflow-x: auto;
+    padding: 0.4rem 0 1rem;
+  }
+
+  .feedback-loop svg {
+    display: block;
+    min-width: 48rem;
+    width: 100%;
+  }
+
+  .loop-line {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2;
+    stroke-dasharray: 8 6;
+  }
+
+  .loop-return {
+    stroke: var(--accent-warm);
+  }
+
+  .feedback-loop marker path {
+    fill: var(--accent);
+  }
+
+  .feedback-loop text {
+    fill: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: 18px;
+  }
+
+  .truth-note {
+    display: grid;
+    gap: 0.5rem 1.5rem;
+    margin: 0 0 2.5rem;
+    padding: 1rem 1.2rem;
+    border-left: 3px solid var(--accent-warm);
+    background: var(--paper-raised);
+  }
+
+  @media (min-width: 48rem) {
+    .truth-note {
+      grid-template-columns: 8rem 1fr;
+    }
+  }
+
+  .truth-note p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 0.86rem;
+  }
+
+  .evidence-table-wrap {
+    overflow-x: auto;
+    margin-bottom: 2.5rem;
+  }
+
+  .evidence-table {
+    width: 100%;
+    min-width: 46rem;
+    border-collapse: collapse;
+    background: var(--paper-raised);
+  }
+
+  .evidence-table th,
+  .evidence-table td {
+    padding: 0.75rem 0.8rem;
+    border-bottom: 1px solid var(--rule);
+    text-align: left;
+    font-size: 0.82rem;
+  }
+
+  .evidence-table th {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--ink-faint);
+  }
+
+  .boundary-block {
+    display: grid;
+    gap: 1rem 2rem;
+    margin-bottom: 3rem;
+    padding: 1.4rem;
+    border: 1px solid var(--accent-warm);
+    background: var(--paper-raised);
+  }
+
+  @media (min-width: 48rem) {
+    .boundary-block {
+      grid-template-columns: 10rem 1fr;
+    }
+  }
+
+  .boundary-block h3 {
+    color: var(--accent-warm);
+  }
+
+  .boundary-block ul {
+    margin: 0;
+    padding-left: 1.25rem;
+  }
+
+  .boundary-block li + li {
+    margin-top: 0.5rem;
+  }
+
+  .boundary-block code {
+    font-family: var(--font-mono);
+    font-size: 0.84em;
+  }
+
+  .reflection {
+    max-width: 52rem;
+  }
+
+  .reflection blockquote {
+    margin-bottom: 1.4rem;
+  }
+
+  .reflection > p:last-child {
+    margin: 0;
+    color: var(--ink-soft);
+  }
+
+  .reading h2 {
+    margin-bottom: 2rem;
+  }
+
+  .reading-links {
+    display: grid;
+    border-top: 1px solid var(--rule);
+  }
+
+  .reading-links a {
+    display: grid;
+    gap: 0.25rem 2rem;
+    padding: 1rem 0;
+    border-bottom: 1px dashed var(--rule);
+    text-decoration: none;
+  }
+
+  @media (min-width: 46rem) {
+    .reading-links a {
+      grid-template-columns: minmax(10rem, 0.7fr) minmax(20rem, 1.3fr);
+    }
+  }
+
+  .reading-links span {
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+  }
+
+  :global(:root[data-theme='dark']) .hero h1::after {
+    opacity: 0.84;
+  }
+
+  :global(:root[data-theme='dark']) .hero-proof img,
+  :global(:root[data-theme='dark']) .wide-proof img,
+  :global(:root[data-theme='dark']) .evolution-media img,
+  :global(:root[data-theme='dark']) .review-pair img {
+    box-shadow: 0 1.1rem 3rem rgb(0 0 0 / 0.32);
+  }
+
+  @media (max-width: 40rem) {
+    .hero {
+      padding-block: 0.5rem 3.25rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.8rem, 13vw, 3.35rem);
+    }
+
+    .hero-title {
+      font-size: 1.55rem;
+    }
+
+    .case-section {
+      padding-block: 3.4rem;
+    }
+
+    .section-intro h2,
+    .reading h2 {
+      font-size: 2rem;
+    }
+
+    .evolution-media img,
+    .review-pair img {
+      box-shadow: none;
+    }
+  }
+</style>

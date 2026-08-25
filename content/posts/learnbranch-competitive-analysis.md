@@ -1,6 +1,7 @@
 ---
 title: LearnBranch 竞品分析：AI 分支对话如何变成可追溯的学习过程
 date: 2026-08-19
+updated: 2026-08-25
 description: 从 ChatGPT、NotebookLM、Xmind AI、Heptabase 与 Obsidian Canvas 的不同产品对象出发，判断 LearnBranch 应该在哪个战场竞争。
 category: AI产品经理的思考
 tags: [LearnBranch, 竞品分析, AI学习, 分支对话, 本地优先]
@@ -8,6 +9,8 @@ draft: false
 ---
 
 如果只列功能，LearnBranch 很容易被描述成“AI 对话 + 思维导图 + Obsidian”。这句话每个词都对，合在一起却几乎没有决策价值：它既没有说明用户为什么要换工具，也没有说明这个产品应该主动放弃什么。
+
+这篇专题属于 [LearnBranch 产品工程案例](/projects/learnbranch/) 的竞品与定位部分；案例页提供完整演进、AI 协作和工程证据的快速入口。
 
 这篇分析不比较模型跑分、订阅价格或脑图模板数量，而是围绕一个更窄的任务展开：
 

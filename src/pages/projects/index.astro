@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const title = '项目';
+const description = '产品判断、AI 协作编排与工程验收的完整项目案例。';
+---
+
+<BaseLayout {title} {description}>
+  <header class="page-head">
+    <p class="meta">PROJECTS / 项目档案</p>
+    <h1>项目</h1>
+    <p>不只展示成品，也保留问题如何被定义、方案如何改变，以及 AI 生成结果如何经过人工验收。</p>
+  </header>
+
+  <section class="project-row" aria-labelledby="learnbranch-title">
+    <div>
+      <p class="project-meta">2026 · Windows 桌面应用 · AI 产品工程</p>
+      <h2 id="learnbranch-title"><a href="/projects/learnbranch/">LearnBranch</a></h2>
+      <p>把线性的 AI 对话，变成可追溯、可审核、可整理的学习树。</p>
+      <p class="project-role">产品定义 · AI 协作编排 · 代码阅读与人工验收</p>
+    </div>
+    <a class="project-link" href="/projects/learnbranch/" aria-label="阅读 LearnBranch 完整案例">阅读案例 →</a>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head {
+    padding-block: 1rem 2.5rem;
+    border-bottom: 3px double var(--rule);
+  }
+
+  .page-head h1 {
+    margin: 0.2rem 0 0.8rem;
+    font-size: clamp(2.6rem, 6vw, 4rem);
+  }
+
+  .page-head p:last-child {
+    max-width: var(--measure);
+    margin: 0;
+    color: var(--ink-soft);
+  }
+
+  .project-row {
+    display: grid;
+    gap: 1.4rem;
+    padding-block: 2rem;
+    border-bottom: 1px dashed var(--rule);
+  }
+
+  @media (min-width: 40rem) {
+    .project-row {
+      grid-template-columns: 1fr auto;
+      align-items: end;
+    }
+  }
+
+  .project-meta,
+  .project-role {
+    margin: 0 0 0.55rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ink-faint);
+  }
+
+  .project-row h2 {
+    margin: 0 0 0.55rem;
+    font-size: 1.8rem;
+  }
+
+  .project-row h2 a,
+  .project-link {
+    text-decoration: none;
+  }
+
+  .project-row > div > p:not(.project-meta, .project-role) {
+    max-width: var(--measure);
+    margin-bottom: 0.65rem;
+    color: var(--ink-soft);
+  }
+
+  .project-link {
+    font-family: var(--font-ui);
+    font-size: 0.85rem;
+    color: var(--accent);
+  }
+</style>

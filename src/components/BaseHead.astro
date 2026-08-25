@@ -7,16 +7,19 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description?: string;
+  /** Open Graph 图片，可传站内绝对路径或完整 URL */
+  image?: string;
   /** 文章页传 'article'，其余页面用默认值 */
   type?: 'website' | 'article';
   publishedDate?: Date;
 }
 
-const { title, description = SITE_DESCRIPTION, type = 'website', publishedDate } = Astro.props;
+const { title, description = SITE_DESCRIPTION, image, type = 'website', publishedDate } = Astro.props;
 
 // Astro.site 在 astro.config.mjs 里已配置，这里可以安全构造绝对 URL
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const pageTitle = title === SITE_TITLE ? title : `${title} · ${SITE_TITLE}`;
+const socialImage = image ? new URL(image, Astro.site) : undefined;
 ---
 
 <meta charset="utf-8" />
@@ -32,8 +35,10 @@ const pageTitle = title === SITE_TITLE ? title : `${title} · ${SITE_TITLE}`;
 <meta property="og:url" content={canonical} />
 <meta property="og:site_name" content={SITE_TITLE} />
 <meta property="og:locale" content="zh_CN" />
+{socialImage && <meta property="og:image" content={socialImage} />}
 {publishedDate && <meta property="article:published_time" content={publishedDate.toISOString()} />}
 <meta name="twitter:card" content="summary_large_image" />
+{socialImage && <meta name="twitter:image" content={socialImage} />}
 
 <link rel="sitemap" href="/sitemap-index.xml" />
 <link rel="alternate" type="application/rss+xml" title={SITE_TITLE} href="/rss.xml" />

@@ -1,6 +1,7 @@
 ---
 title: LearnBranch 构建实录：从 Obsidian 插件到 Tauri 桌面应用
 date: 2026-08-19
+updated: 2026-08-25
 description: 记录 LearnBranch 如何从分支学习问题出发，经历 Obsidian 插件、交互原型、Tauri 主线、数据迁移与 Windows 分发验收。
 category: 技术博客
 tags: [LearnBranch, Tauri, React, Rust, Obsidian, 构建实录]
@@ -12,6 +13,8 @@ LearnBranch 的起点不是“做一张漂亮的知识图谱”，而是一个�
 于是产品问题被改写成：能不能让每次追问都成为一个有父节点、有上下文、有状态、最终还能回到本地笔记的学习节点？
 
 这篇文章记录当前仓库所能证明的构建过程。代码仍是开发版，仓库也保留了大量历史蓝图；我会把“曾经计划”“当前实现”和“已经验收”分开写。
+
+如果想先快速了解项目全貌，可以阅读 [LearnBranch 产品工程案例](/projects/learnbranch/)；该页面把产品判断、AI 协作方式、实现演进和验证证据串成了一条主线。
 
 ## 第一阶段：先把对话变成树
 

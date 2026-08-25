@@ -42,6 +42,7 @@ export function categoryByName(name: string) {
 
 export const NAV_LINKS = [
   { href: '/posts/', label: '文章' },
+  { href: '/projects/', label: '项目' },
   { href: '/graph/', label: '脉络' },
   { href: '/archive/', label: '归档' },
   { href: '/tags/', label: '标签' },

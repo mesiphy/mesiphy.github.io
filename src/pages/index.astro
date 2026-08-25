@@ -54,6 +54,20 @@ const graphs = getCategoryGraphs(
         }
       </section>
 
+      <section class="featured-project" aria-labelledby="featured-title">
+        <div class="featured-copy">
+          <p class="featured-label">精选项目 · AI 产品工程</p>
+          <h2 id="featured-title">LearnBranch</h2>
+          <p>把线性的 AI 对话，变成可追溯的学习树。</p>
+          <a href="/projects/learnbranch/">阅读完整案例 →</a>
+        </div>
+        <div class="featured-proof" aria-label="项目摘要">
+          <span>产品判断</span>
+          <span>AI 协作编排</span>
+          <span>Windows 验收</span>
+        </div>
+      </section>
+
       <section class="latest">
         <h2 class="section-title">最新</h2>
         {
@@ -277,6 +291,67 @@ const graphs = getCategoryGraphs(
     margin: 1.75rem 0 0;
     font-family: var(--font-mono);
     font-size: 0.82rem;
+  }
+
+  .featured-project {
+    display: grid;
+    gap: 1.25rem 2rem;
+    margin: 0 0 3.25rem;
+    padding: 1.6rem 0;
+    border-block: 1px dashed var(--rule);
+  }
+
+  @media (min-width: 40rem) {
+    .featured-project {
+      grid-template-columns: minmax(0, 1fr) minmax(12rem, 0.7fr);
+      align-items: end;
+    }
+  }
+
+  .featured-label {
+    margin: 0 0 0.45rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    color: var(--accent-warm);
+  }
+
+  .featured-copy h2 {
+    margin-bottom: 0.35rem;
+    font-size: 1.65rem;
+  }
+
+  .featured-copy p:not(.featured-label) {
+    margin: 0 0 0.75rem;
+    color: var(--ink-soft);
+  }
+
+  .featured-copy a {
+    font-family: var(--font-ui);
+    font-size: 0.84rem;
+    color: var(--accent);
+  }
+
+  .featured-proof {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    justify-content: flex-start;
+  }
+
+  @media (min-width: 40rem) {
+    .featured-proof {
+      justify-content: flex-end;
+    }
+  }
+
+  .featured-proof span {
+    padding: 0.25rem 0.55rem;
+    border: 1px solid var(--rule);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--ink-muted);
+    background: var(--paper-raised);
   }
 
   .more a {
