@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light" />
+    <title>LearnBranch — 交互原型</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="prototype-stage">
+      <section class="app-window" aria-label="LearnBranch 学习应用">
+        <header class="top-bar">
+          <button class="brand" type="button" data-go-home aria-label="返回学习会话首页">
+            <svg class="brand-icon" viewBox="0 0 30 30" aria-hidden="true">
+              <path d="M15 6v6M15 12 8 20M15 12l8 8" />
+              <circle cx="15" cy="5" r="3.2" />
+              <circle cx="7" cy="22" r="3.2" />
+              <circle cx="23" cy="22" r="3.2" />
+            </svg>
+            <span>LearnBranch</span>
+          </button>
+          <button class="vault-button" type="button" aria-label="切换 Vault">LearnBranch 演示 Vault</button>
+          <button class="icon-button settings-button" type="button" aria-label="打开设置">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3" /><path d="M12 3.7v2.1M12 18.2v2.1M3.7 12h2.1M18.2 12h2.1M6.1 6.1l1.5 1.5M16.4 16.4l1.5 1.5M17.9 6.1l-1.5 1.5M7.6 16.4l-1.5 1.5" /></svg>
+          </button>
+        </header>
+
+        <div class="screen-stack">
+          <section class="screen screen-home" data-screen="home" aria-label="学习会话首页">
+            <aside class="session-sidebar" aria-label="学习会话列表">
+              <div class="sidebar-heading"><h1>学习会话</h1><button class="icon-button add-button" type="button" aria-label="新建会话" data-open-create><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg></button></div>
+              <label class="search-box"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="5.6" /><path d="m14.6 14.6 4.2 4.2" /></svg><span class="sr-only">搜索会话</span><input type="search" placeholder="搜索会话" autocomplete="off" data-session-search /></label>
+              <div class="session-list" data-session-list>
+                <button class="session-card" type="button" data-session-title="产品经理的必修课"><strong>产品经理的必修课</strong><span>进行中</span><time datetime="2026-08-17">2026/8/17</time><span>9 个节点</span></button>
+                <button class="session-card" type="button" data-session-title="测试会话"><strong>测试会话</strong><span>已整理</span><time datetime="2026-08-16">2026/8/16</time><span>5 个节点</span></button>
+              </div>
+              <p class="no-results" data-no-results hidden>没有匹配的会话</p>
+            </aside>
+            <main class="empty-workspace"><div class="empty-copy"><svg class="empty-graph" viewBox="0 0 132 104" role="img" aria-label="三个节点组成的学习关系图"><path d="M31 48 91 22 82 83 31 48Z" /><circle cx="31" cy="48" r="10" /><circle cx="91" cy="22" r="10" /><circle cx="82" cy="83" r="10" /></svg><h2>选择会话查看学习地图</h2><p>从左侧选择一个学习会话</p></div></main>
+          </section>
+
+          <section class="screen screen-detail" data-screen="detail" aria-label="节点详情工作区" hidden>
+            <aside class="session-sidebar compact-sidebar" aria-label="学习会话列表">
+              <div class="sidebar-heading"><h1>学习会话</h1><button class="icon-button add-button" type="button" aria-label="新建会话" data-open-create><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg></button></div>
+              <label class="search-box"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="5.6" /><path d="m14.6 14.6 4.2 4.2" /></svg><span class="sr-only">搜索会话</span><input type="search" placeholder="搜索会话" autocomplete="off" data-session-search /></label>
+              <div class="session-list" data-session-list>
+                <button class="session-card is-selected" type="button" data-session-title="产品经理的必修课" aria-pressed="true"><strong>产品经理的必修课</strong><span>进行中</span><time datetime="2026-08-17">2026/8/17</time><span>9 个节点</span></button>
+                <button class="session-card" type="button" data-session-title="测试会话" aria-pressed="false"><strong>测试会话</strong><span>已整理</span><time datetime="2026-08-16">2026/8/16</time><span>5 个节点</span></button>
+              </div>
+              <p class="no-results" data-no-results hidden>没有匹配的会话</p>
+            </aside>
+
+            <main class="node-workspace">
+              <header class="workspace-heading">
+                <div class="workspace-kicker"><i class="solid-dot"></i> AI 草稿待审核</div>
+                <h1 data-node-title>求职产品实习岗位需要掌握哪些东西</h1>
+                <p>更新于 2026/08/17&nbsp; 20:49</p>
+                <div class="workspace-actions"><button type="button" data-open-branch>创建分支</button><button type="button" data-export-overview>导出整览</button><button class="is-disabled" type="button" disabled>知识点不可编辑</button><button type="button" data-read-node>专注阅读</button><button class="mobile-graph-button" type="button" data-show-graph>图谱导航</button></div>
+              </header>
+              <nav class="breadcrumb" aria-label="节点路径"><button type="button" data-go-home aria-label="返回会话首页"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 11 12 4.5 19.5 11M7 9.5v9h10v-9M10 18.5v-5h4v5" /></svg></button><span>›</span><span data-node-path>求职产品实习岗位需要掌握哪些东西</span></nav>
+              <article class="note-block"><div><strong>这是 AI 初版笔记</strong><p>请保留符合 LearnBranch 总原则的内容，确认后再写入 Obsidian。</p></div><button type="button" data-open-draft>编辑草稿</button></article>
+              <section class="content-block question-block"><div class="content-label-row"><h2>问题</h2><span>根节点</span></div><p data-node-question>求职产品实习岗位需要掌握哪些基本面</p></section>
+              <section class="content-block answer-block"><h2>AI 草稿回答</h2><div class="markdown-copy" data-answer-copy><h3>一、硬技能</h3><ul><li>原型与流程图工具</li><li>Figma</li><li>ProcessOn</li></ul><h3>二、数据能力</h3><ul><li>SQL 基本查询</li><li>指标拆解与复盘</li></ul></div></section>
+            </main>
+
+            <aside class="graph-navigator" aria-label="知识脉络节点导航">
+              <header><div><strong>知识脉络</strong><span data-node-count>9 节点</span></div><button type="button" data-show-graph>展开</button></header>
+              <svg class="mini-graph" viewBox="0 0 250 430" role="img" aria-label="当前会话节点关系图">
+                <g class="graph-edges"><path d="M125 45V105M125 105 65 170M125 105l60 65M65 170v70M65 170l-34 70M65 170l34 70M185 170v70M185 170l38 70M65 240v88" /></g>
+                <g class="graph-node" data-node-id="root" transform="translate(125 45)"><circle r="10"/><text x="18" y="5">根问题</text></g><g class="graph-node" data-node-id="parent" transform="translate(125 105)"><circle r="10"/><text x="18" y="5">父节点</text></g><g class="graph-node" data-node-id="skill" transform="translate(65 170)"><circle r="10"/><text x="18" y="5">硬技能</text></g><g class="graph-node" data-node-id="thinking" transform="translate(185 170)"><circle r="10"/><text x="18" y="5">产品思维</text></g><g class="graph-node" data-node-id="figma" transform="translate(31 240)"><circle r="8"/><text x="14" y="4">Figma</text></g><g class="graph-node" data-node-id="process" transform="translate(65 240)"><circle r="8"/></g><g class="graph-node" data-node-id="sql" transform="translate(99 240)"><circle r="8"/><text x="14" y="4">SQL</text></g><g class="graph-node" data-node-id="research" transform="translate(185 240)"><circle r="8"/></g><g class="graph-node" data-node-id="review" transform="translate(223 240)"><circle r="8"/></g><g class="graph-node is-current" data-node-id="current" transform="translate(65 328)"><circle class="outer" r="13"/><circle class="inner" r="5"/><text x="18" y="5">当前节点</text></g><g id="mini-dynamic-nodes"></g>
+              </svg>
+              <footer><span>当前</span><strong data-current-node>求职产品实习岗位需要掌握哪些东西</strong></footer>
+            </aside>
+          </section>
+
+          <section class="screen screen-graph" data-screen="graph" aria-label="图谱导航与筛选" hidden>
+            <header class="graph-screen-header">
+              <div><button class="icon-button" type="button" data-show-detail aria-label="返回节点详情"><svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg></button><h1>知识脉络 · <span data-node-count>9 节点</span></h1></div>
+              <label class="graph-search"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="5.6"/><path d="m14.6 14.6 4.2 4.2"/></svg><input type="search" placeholder="搜索问题或回答..." data-graph-search /></label>
+            </header>
+            <div class="graph-screen-layout">
+              <main class="graph-stage">
+                <svg class="large-graph" viewBox="0 0 720 500" role="img" aria-label="学习节点关系图">
+                  <g class="graph-edges"><path d="M350 58v75M350 133 205 225M350 133l145 92M205 225l-92 95M205 225v95M205 225l92 95M495 225l-65 95M495 225l82 95M205 320v96" /></g>
+                  <g class="graph-node" data-node-id="root" data-status="waiting" transform="translate(350 58)"><circle r="14"/><text x="22" y="5">根问题</text></g><g class="graph-node" data-node-id="parent" data-status="waiting" transform="translate(350 133)"><circle r="14"/><text x="22" y="5">父节点</text></g><g class="graph-node" data-node-id="skill" data-status="understood" transform="translate(205 225)"><circle r="14"/><text x="22" y="5">硬技能</text></g><g class="graph-node" data-node-id="thinking" data-status="exploring" transform="translate(495 225)"><circle r="14"/><text x="22" y="5">产品思维</text></g><g class="graph-node" data-node-id="figma" data-status="waiting" transform="translate(113 320)"><circle r="11"/><text x="18" y="4">Figma</text></g><g class="graph-node" data-node-id="process" data-status="waiting" transform="translate(205 320)"><circle r="11"/><text x="18" y="4">ProcessOn</text></g><g class="graph-node" data-node-id="sql" data-status="exploring" transform="translate(297 320)"><circle r="11"/><text x="18" y="4">SQL 基本功</text></g><g class="graph-node" data-node-id="research" data-status="understood" transform="translate(430 320)"><circle r="11"/><text x="18" y="4">用户研究</text></g><g class="graph-node" data-node-id="review" data-status="stored" transform="translate(577 320)"><circle r="11"/><text x="18" y="4">复盘</text></g><g class="graph-node is-current" data-node-id="current" data-status="understood" transform="translate(205 416)"><circle class="outer" r="18"/><circle class="inner" r="7"/><text x="26" y="5">当前节点</text></g><g id="large-dynamic-nodes"></g>
+                </svg>
+                <aside class="node-callout" data-node-callout><strong>SQL 基本功</strong><span>深化理解 · 根本中</span></aside>
+                <div class="graph-toolbar" aria-label="图谱工具"><button type="button" data-fit-graph><svg viewBox="0 0 24 24"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg><span>适应视图</span></button><button type="button" data-layout-graph><svg viewBox="0 0 24 24"><path d="M4 9V4h5M15 4h5v5M4 15v5h5M15 20h5v-5M8 12h8"/></svg><span>重新布局</span></button><button type="button" data-organize><svg viewBox="0 0 24 24"><path d="M7 6h13M7 12h13M7 18h13"/><circle cx="3.5" cy="6" r=".8"/><circle cx="3.5" cy="12" r=".8"/><circle cx="3.5" cy="18" r=".8"/></svg><span>整理会话</span></button><button type="button" data-export-canvas><svg viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19h14"/></svg><span>导出 Obsidian Canvas</span></button><button type="button" data-show-outline><svg viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M3 6h1M3 12h1M3 18h1"/></svg><span>查看纲要</span></button></div>
+              </main>
+              <aside class="graph-filter-panel">
+                <fieldset><legend>筛选图谱节点</legend><label><input type="checkbox" value="waiting" data-status-filter checked /><span class="checkbox-drawing"></span>待学习</label><label><input type="checkbox" value="exploring" data-status-filter checked /><span class="checkbox-drawing"></span>探索中</label><label><input type="checkbox" value="understood" data-status-filter checked /><span class="checkbox-drawing"></span>已理解</label><label><input type="checkbox" value="stored" data-status-filter checked /><span class="checkbox-drawing"></span>存档</label></fieldset>
+                <div class="status-key"><strong>节点状态</strong><span><i class="status-symbol filled"></i>当前节点</span><span><i class="status-symbol ring"></i>根问题</span><span><i class="status-symbol half"></i>待学习</span><span><i class="status-symbol open"></i>探索中</span><span><i class="status-symbol solid"></i>已理解</span><span><i class="status-symbol question">?</i>存档</span></div>
+              </aside>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <div class="modal-layer" id="create-session-layer" hidden><div class="modal-scrim" data-close-modal="create-session"></div><section class="modal create-session-modal" role="dialog" aria-modal="true" aria-labelledby="create-session-title"><header class="modal-header"><h2 id="create-session-title">新建学习会话</h2><button class="close-button" type="button" data-close-modal="create-session" aria-label="关闭新建会话弹窗"><svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header><form id="create-session-form" novalidate><div class="modal-body compact-form"><label class="field"><span>会话标题 *</span><input id="session-title" name="title" autocomplete="off" required /></label><label class="field"><span>会话描述</span><textarea id="session-description" name="description" rows="2"></textarea></label><label class="field"><span>根问题 *</span><textarea id="root-question" name="question" rows="3" required></textarea></label><p class="form-note">会话会在 AI 生成前保存，因此回答失败后仍可重试。</p><label class="field"><span>模型</span><select id="session-model" name="model"><option value="deepseek-chat">deepseek-chat</option><option value="deepseek-reasoner">deepseek-reasoner</option></select></label><p class="model-alternative" data-model-alternative>备选模型：deepseek-reasoner</p><label class="checkbox-field"><input id="thinking-mode" name="thinking" type="checkbox"/><span class="checkbox-drawing"></span><span>启用深度思考模式</span></label><p class="form-error" data-create-error role="alert" hidden></p></div><footer class="modal-footer"><button type="button" data-close-modal="create-session">取消</button><button class="primary-action" type="submit" disabled>创建会话</button></footer></form></section></div>
+
+    <div class="modal-layer" id="draft-review-layer" hidden><div class="modal-scrim" data-close-modal="draft-review"></div><section class="modal draft-review-modal" role="dialog" aria-modal="true" aria-labelledby="draft-review-title"><header class="modal-header centered-header"><h2 id="draft-review-title">审核 AI 草稿</h2><button class="close-button" type="button" data-close-modal="draft-review" aria-label="关闭草稿审核弹窗"><svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header><div class="modal-body draft-body"><p>此回答尚未写入 Obsidian，确认保存后才会成为笔记正文。</p><label class="field"><span>保存文件名称（可选）</span><input id="draft-filename" value="求职产品实习岗位需要掌握哪些基本面.md" /></label><p class="field-hint">留空时保留当前文件名</p><div class="draft-columns"><label class="draft-panel"><strong>Markdown 回答</strong><textarea id="draft-markdown" rows="14">### 一、硬技能
+1. 原型与流程图工具
+- Figma
+- ProcessOn
+
+### 二、数据能力
+- SQL 基本查询
+- 指标拆解与复盘</textarea></label><section class="draft-panel"><strong>实时预览</strong><div class="draft-preview" id="draft-preview"></div></section></div></div><footer class="modal-footer"><button type="button" data-close-modal="draft-review">取消</button><button class="primary-action" type="button" data-save-draft>保存到 Obsidian</button></footer></section></div>
+
+    <div class="modal-layer" id="branch-layer" hidden><div class="modal-scrim" data-close-modal="branch"></div><section class="modal branch-modal" role="dialog" aria-modal="true" aria-labelledby="branch-title"><header class="modal-header"><h2 id="branch-title">创建分支问题</h2><button class="close-button" type="button" data-close-modal="branch" aria-label="关闭创建分支弹窗"><svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header><form id="branch-form" novalidate><div class="modal-body compact-form"><label class="field"><span>问题（节点名称） *</span><input id="branch-question" value="SQL 基本功" required /></label><p class="field-hint">用于图谱节点和页面标题，建议控制在 20 个字以内。</p><label class="field"><span>问题描述（发送给 AI） *</span><textarea id="branch-description" rows="4" required>请系统说明产品实习需要掌握的 SQL 查询知识，并提供练习题。</textarea></label><p class="field-hint">AI 实际接收的是问题描述，而不是上方的节点名称。</p><label class="field"><span>问题类型</span><select id="branch-type"><option value="deepening">深化理解</option><option value="prerequisite">前置知识</option><option value="clarification">澄清问题</option><option value="application">应用场景</option><option value="challenge">挑战问题</option></select></label><label class="field"><span>AI 模型</span><select id="branch-model"><option>DeepSeek Chat（均衡）</option><option>DeepSeek Reasoner</option></select></label><label class="checkbox-field"><input id="branch-thinking" type="checkbox"/><span class="checkbox-drawing"></span><span>启用深度思考模式</span></label><p class="form-error" data-branch-error role="alert" hidden></p></div><footer class="modal-footer"><button type="button" data-close-modal="branch">取消</button><button class="primary-action" type="submit">创建分支</button></footer></form></section></div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+    <script src="./app.js"></script>
+  </body>
+</html>

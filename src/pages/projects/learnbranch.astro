@@ -109,7 +109,7 @@ const structuredData = {
     <div class="section-intro">
       <h2 id="solution-title">先实现功能，再发现体验边界</h2>
       <p>
-        项目没有沿着一条预设路线完成。Obsidian 插件先证明 Markdown、祖先链上下文和 Canvas 输出可行；HTML 原型暴露图谱挤压阅读空间的问题；最终转向 Tauri，让详情成为主工作区，图谱退到右侧承担定位。
+        项目没有沿着一条预设路线完成。Obsidian 插件先证明 Markdown、祖先链上下文和 Canvas 输出可行；早期 HTML 原型暴露图谱挤压阅读空间的问题；转向后的 S1～S6 交互原型把详情放回主工作区，并成为 Tauri 实现的输入。
       </p>
     </div>
 
@@ -145,14 +145,17 @@ const structuredData = {
     </div>
 
     <figure class="wide-proof historical-proof">
-      <img
-        src="/projects/learnbranch/html-prototype.png"
-        width="1440"
-        height="900"
-        loading="lazy"
-        alt="Codex 实现的 LearnBranch 早期 HTML 原型，图谱占据主工作区，详情位于右侧"
-      />
-      <figcaption>可点击 HTML 原型：它暴露了图谱占据主区、长内容被挤到右侧的阅读问题</figcaption>
+      <a class="prototype-preview" href="/projects/learnbranch/prototype/">
+        <img
+          src="/projects/learnbranch/html-prototype.png"
+          width="1440"
+          height="900"
+          loading="lazy"
+          alt="LearnBranch S1～S6 可点击 HTML 原型，中央展示节点详情，右侧展示学习图谱"
+        />
+        <span>打开可点击原型 ↗</span>
+      </a>
+      <figcaption>转向后的 S1～S6 原型：可体验新建会话、草稿审核、创建分支、图谱筛选与导出反馈。</figcaption>
     </figure>
 
     <div class="product-principles">
@@ -676,6 +679,29 @@ const structuredData = {
   .wide-proof {
     max-width: 63rem;
     margin-inline: auto;
+  }
+
+  .prototype-preview {
+    position: relative;
+    display: block;
+    color: var(--paper);
+    text-decoration: none;
+  }
+
+  .prototype-preview span {
+    position: absolute;
+    right: 0.8rem;
+    bottom: 0.8rem;
+    padding: 0.45rem 0.7rem;
+    border: 1px solid var(--accent-warm);
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    background: var(--accent-warm);
+    box-shadow: 0 0.35rem 1.2rem rgb(15 34 49 / 0.18);
+  }
+
+  .prototype-preview:hover img {
+    border-color: var(--accent-warm);
   }
 
   .roles {
