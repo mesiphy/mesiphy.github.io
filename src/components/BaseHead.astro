@@ -18,7 +18,8 @@ const { title, description = SITE_DESCRIPTION, image, type = 'website', publishe
 
 // Astro.site 在 astro.config.mjs 里已配置，这里可以安全构造绝对 URL
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const pageTitle = title === SITE_TITLE ? title : `${title} · ${SITE_TITLE}`;
+const pageTitle =
+  title === SITE_TITLE ? `${SITE_TITLE} · ${SITE_AUTHOR}` : `${title} · ${SITE_TITLE}`;
 const socialImage = image ? new URL(image, Astro.site) : undefined;
 ---
 

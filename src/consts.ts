@@ -1,5 +1,6 @@
-export const SITE_TITLE = '油墨手记';
-export const SITE_DESCRIPTION = '学习记录、作品集与技术分享。知识分享、技术博客、AI 产品经理的思考。';
+export const SITE_TITLE = '未竟';
+export const SITE_DESCRIPTION =
+  'mesiphy 的个人站点。记录学习、技术实践、产品思考与正在发生的项目，以及那些仍未完成的问题。';
 export const SITE_AUTHOR = 'mesiphy';
 export const SITE_URL = 'https://mesiphy.github.io';
 
@@ -14,17 +15,17 @@ export const CATEGORIES = [
   {
     name: '知识分享',
     slug: 'knowledge',
-    description: '读书、哲学与人生思考的沉淀。',
+    description: '读书、学习，以及对世界尚未完成的理解。',
   },
   {
     name: '技术博客',
     slug: 'tech',
-    description: '工程实践、工具链与开发流程。',
+    description: '工程实践、工具链、开发过程与踩过的坑。',
   },
   {
     name: 'AI产品经理的思考',
     slug: 'ai-pm',
-    description: '竞品分析、产品判断与行业观察。',
+    description: '产品判断、竞品分析，以及仍在变化中的行业观察。',
   },
 ] as const;
 
