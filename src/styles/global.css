@@ -1,16 +1,16 @@
 /* 连续水彩纸本编辑风：背景色与纸纤维烘焙在同一张图里，正文直接漂浮在纸面上。 */
 
 :root {
-  --paper: #faf5ea;
-  --paper-raised: rgb(250 245 234 / 0.76);
-  --ink: #102a43;
-  --ink-muted: #4f5d67;
-  --ink-soft: #5f6b72;
-  --ink-faint: #5f6b72;
-  --rule: rgb(23 50 70 / 0.22);
-  --rule-soft: rgb(23 50 70 / 0.13);
-  --accent: #245b8f;
-  --accent-warm: #b86649;
+  --paper: #f5efe3;
+  --paper-raised: rgb(245 239 227 / 0.80);
+  --ink: #1a2832;
+  --ink-muted: #556067;
+  --ink-soft: #6a7178;
+  --ink-faint: #7a8088;
+  --rule: rgb(23 50 70 / 0.18);
+  --rule-soft: rgb(23 50 70 / 0.10);
+  --accent: #2d5f8d;
+  --accent-warm: #a85d45;
   --stamp: var(--accent);
   --watercolor-bg: url('../assets/backgrounds/watercolor-light-desktop.webp');
   --title-brush: url('../assets/backgrounds/title-brush-blue.webp');

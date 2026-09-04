@@ -20,7 +20,10 @@ const graphs = getCategoryGraphs(
     <section class="masthead">
       <p class="masthead-kicker">学习记录 · 项目实践 · 产品思考</p>
       <h1 class="masthead-title">{SITE_TITLE}</h1>
-      <p class="masthead-lede">记录有价值的探索，留下有价值的问题，继续未竟的道路。</p>
+      <p class="masthead-lede">
+        是谓无状之状，无物之象，是谓惚恍。<br />
+        记录有价值的探索，留下有价值的问题，继续未竟的道路。
+      </p>
     </section>
 
     {/* 宽屏时贴在右栏顶部，窄屏时落到页面末尾当一张站点地图 */}
@@ -227,11 +230,17 @@ const graphs = getCategoryGraphs(
 
   @media (min-width: 40rem) {
     .categories {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
     }
 
     .cat + .cat {
       border-left: 1px dashed var(--rule);
+    }
+  }
+
+  @media (min-width: 60rem) {
+    .categories {
+      grid-template-columns: repeat(4, 1fr);
     }
   }
 

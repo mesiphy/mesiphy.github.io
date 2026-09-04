@@ -1,4 +1,4 @@
-export const SITE_TITLE = '未竟';
+export const SITE_TITLE = '惚恍';
 export const SITE_DESCRIPTION =
   'mesiphy 的个人站点。记录学习、技术实践、产品思考与正在发生的项目，以及那些仍未完成的问题。';
 export const SITE_AUTHOR = 'mesiphy';
@@ -23,9 +23,14 @@ export const CATEGORIES = [
     description: '工程实践、工具链、开发过程与踩过的坑。',
   },
   {
-    name: 'AI产品经理的思考',
-    slug: 'ai-pm',
-    description: '产品判断、竞品分析，以及仍在变化中的行业观察。',
+    name: 'AI+产品',
+    slug: 'ai-product',
+    description: '记录 学习AI 学习产品中的思考。',
+  },
+  {
+    name: '惚兮恍兮，恍兮惚兮',
+    slug: 'huxi-huangxi',
+    description: '惚兮恍兮，其中有象；恍兮惚兮，其中有物。窈兮冥兮，其中有精；其精甚真，其中有信。',
   },
 ] as const;
 
