@@ -3,7 +3,7 @@ title: LearnBranch PRD：把一次 AI 对话沉淀为可追溯学习树
 date: 2026-08-19
 updated: 2026-08-25
 description: 一份基于当前 Tauri 实现反向校准的产品需求文档，覆盖目标用户、核心流程、功能边界、数据安全、指标与发布门槛。
-category: AI产品经理的思考
+category: AI+产品
 tags: [LearnBranch, PRD, 产品需求文档, AI学习, 本地优先]
 draft: false
 ---

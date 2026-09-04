@@ -3,7 +3,7 @@ title: LearnBranch 交互逻辑：用 UML 拆解分支问答的状态与边界
 date: 2026-08-19
 updated: 2026-08-25
 description: 用用例图、类图、活动图、状态机和时序图描述 LearnBranch 的核心交互，并补充产品交互矩阵、异常路径与验收规则。
-category: AI产品经理的思考
+category: AI+产品
 tags: [LearnBranch, UML, 交互设计, 状态机, 产品设计]
 draft: false
 ---

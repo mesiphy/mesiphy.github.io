@@ -2,7 +2,7 @@
 title: 竞品分析 01
 date: 2026-07-25
 description: 一次完整的竞品分析记录。重点不是罗列功能差异，而是从功能取舍反推对方的用户假设和资源约束。
-category: AI产品经理的思考
+category: AI+产品
 tags: [竞品分析, 产品方法]
 draft: true
 ---
