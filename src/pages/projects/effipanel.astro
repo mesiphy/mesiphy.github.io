@@ -1,0 +1,351 @@
+---
+import ProjectLayout from '../../layouts/ProjectLayout.astro';
+
+const title = '逸扉面板 · EffiPanel：Windows 效率面板';
+const description =
+  '逸扉面板 · EffiPanel 优化版预览：通过键位绑定、统一搜索、剪贴历史、截图标注与草稿，把 Windows 上的常用操作集中到一个随时可唤起的面板。';
+const image = '/projects/effipanel/home-light.jpg';
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: '逸扉面板 · EffiPanel',
+  description,
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Windows',
+  url: 'https://mesiphy.github.io/projects/effipanel/',
+  image: 'https://mesiphy.github.io/projects/effipanel/home-light.jpg',
+  author: { '@type': 'Person', name: 'mesiphy', url: 'https://mesiphy.github.io/about/' },
+};
+
+const contents = [
+  ['purpose', '使用场景'],
+  ['features', '键位与搜索'],
+  ['clipboard', '剪贴历史'],
+  ['screenshot', '截图标注'],
+  ['draft', '草稿与计算'],
+  ['appearance', '界面与主题'],
+  ['getting-started', '上手指南'],
+  ['availability', '当前状态'],
+];
+---
+
+<ProjectLayout {title} {description} {image}>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+
+  <header class="hero">
+    <div class="hero-meta">
+      <p class="eyebrow">PROJECT / Windows 桌面应用</p>
+      <span class="preview-label">优化版预览</span>
+    </div>
+    <div class="hero-copy">
+      <div>
+        <h1>逸扉面板 <span>· EffiPanel</span></h1>
+        <p class="hero-title">把常用操作，<br />放进一个随时可唤起的面板。</p>
+      </div>
+      <div class="hero-intro">
+        <p>打开应用、寻找文件夹、找回刚复制的内容、截一张图，再记下临时想到的事——这些动作很小，却每天都会重复。逸扉面板把它们集中在同一个入口，让你用熟悉的键位、搜索或鼠标，接着完成手头的工作。</p>
+        <div class="hero-actions">
+          <a class="action-primary" href="#features">浏览功能 <span aria-hidden="true">↓</span></a>
+          <a href="#getting-started">查看上手指南 <span aria-hidden="true">↓</span></a>
+        </div>
+        <p class="hero-note">默认 <kbd>Alt</kbd> + <kbd>Space</kbd> 唤起 · 面向 Windows 用户</p>
+      </div>
+    </div>
+    <figure class="product-shot hero-shot">
+      <a href="/projects/effipanel/home-light.jpg" target="_blank" rel="noopener" aria-label="查看逸扉面板浅色首页原图">
+        <img src="/projects/effipanel/home-light.jpg" width="1280" height="900" alt="逸扉面板浅色首页，上方为键位网格，下方为最近使用、收藏夹和快捷操作" loading="eager" fetchpriority="high" />
+      </a>
+      <figcaption><span>01 / 首页：键位直达与常用入口放在同一屏。</span><span>界面使用演示数据 · 点击图片查看原图 ↗</span></figcaption>
+    </figure>
+  </header>
+
+  <nav class="contents" aria-label="产品介绍目录">
+    <span class="contents-label">阅读导航</span>
+    {contents.map(([id, label]) => <a href={'#' + id}>{label}</a>)}
+  </nav>
+
+  <section class="case-section" id="purpose" aria-labelledby="purpose-title">
+    <p class="section-number">01 / 使用场景</p>
+    <div class="section-heading">
+      <h2 id="purpose-title">把注意力留给正在做的事</h2>
+      <p>一个入口，接住工作中反复出现的小动作。</p>
+    </div>
+    <div class="copy">
+      <p>写报告时，你可能要先打开资料目录，再找浏览器里的参考页面；把几段文字复制到文档后，还要回头寻找上一段内容。讨论方案时，又需要截图、圈出重点、补一句说明。频繁切换工具，容易让原本连续的思路被打断。</p>
+      <p>逸扉面板适合经常在多个应用之间切换的人：整理资料的学生、处理文档的办公用户，以及需要截图沟通、复制文本和打开固定工作目录的人。你可以先把每天重复使用的三五个入口放进来，逐步形成自己的布局。</p>
+    </div>
+    <div class="scenarios">
+      <div><span>整理资料</span><h3>目录和网页，按位置记住</h3><p>把课程文件夹、项目资料和常用网站绑定到固定键位，下一次直接找到它们。</p></div>
+      <div><span>编写文档</span><h3>复制过的内容，再找回来</h3><p>从剪贴历史中检索文字，处理空白或格式，再贴回正在编辑的应用。</p></div>
+      <div><span>沟通协作</span><h3>截图、标注，把重点说清</h3><p>圈出需要讨论的区域，用箭头或文字补充说明，复制图片后继续沟通。</p></div>
+    </div>
+  </section>
+
+  <section class="case-section" id="features" aria-labelledby="features-title">
+    <p class="section-number">02 / 面板、键位与搜索</p>
+    <div class="section-heading">
+      <h2 id="features-title">记得位置就按键，记得名字就搜索</h2>
+      <p>从鼠标点击到键盘直达，按自己的习惯使用。</p>
+    </div>
+    <div class="copy">
+      <p>默认按 <kbd>Alt</kbd> + <kbd>Space</kbd> 唤起面板。窗口会出现在鼠标所在显示器的中央，多屏工作时也能就近操作。首页保留键盘的行列关系，已经绑定的键位显示图标和名称；空键保持安静，鼠标移入或键盘聚焦时再显示绑定提示。</p>
+      <p>每个键位可以对应一种常用入口。点击空键，选择类型并保存即可；也可以通过右键菜单调整已有绑定，按住拖动来移动或交换位置。位置不合适时，直接调整布局，不必重新记一套名字。</p>
+    </div>
+    <div class="binding-layout">
+      <div class="binding-copy">
+        <h3>四种绑定，覆盖常见入口</h3>
+        <dl class="binding-types">
+          <div><dt>应用</dt><dd>打开常用程序。应用已运行时，直达操作可以切到前台，再按一次可最小化。</dd></div>
+          <div><dt>文件夹</dt><dd>直达项目目录、课程资料或经常整理的文件位置。</dd></div>
+          <div><dt>网页</dt><dd>用浏览器打开固定网址，并通过站点图标帮助辨认。</dd></div>
+          <div><dt>内置操作</dt><dd>打开剪贴历史、截图、草稿，也可进入 Windows 设置和常见系统工具。</dd></div>
+        </dl>
+        <p>熟悉布局后，可以使用“直达修饰键 + 已绑定键”执行操作。默认修饰键为 <kbd>Ctrl</kbd>，可以在设置中重新录制。系统保留组合会单独处理，具体规则见后面的上手指南。</p>
+      </div>
+      <figure class="product-shot binding-shot">
+        <a href="/projects/effipanel/binding.jpg" target="_blank" rel="noopener" aria-label="查看键位绑定向导原图">
+          <img src="/projects/effipanel/binding.jpg" width="1280" height="900" alt="绑定向导中的应用、文件夹、网页和内置操作四种类型，当前选择截图操作" loading="lazy" decoding="async" />
+        </a>
+        <figcaption>02 / 选择类型和操作，即可建立自己的键位入口。点击查看原图 ↗</figcaption>
+      </figure>
+    </div>
+    <div class="copy subsection">
+      <h3>不用记住每一个键位</h3>
+      <p>在面板里按 <kbd>Space</kbd>，或点击顶部搜索入口，就能搜索应用、键位、收藏、最近使用、内置操作和剪贴文本。支持拼音检索；应用索引覆盖开始菜单、桌面及商店应用快捷方式，还可以在设置中补充扫描目录。</p>
+      <p>空查询会先展示最近使用与收藏，方便接着上一次的工作。输入关键词后，用 <kbd>↑</kbd> <kbd>↓</kbd> 选择结果，按 <kbd>Enter</kbd> 执行，按 <kbd>Esc</kbd> 返回网格。首页底部也保留最近使用、收藏夹和快捷操作，偶尔使用的入口可以直接点击。</p>
+    </div>
+    <figure class="product-shot">
+      <a href="/projects/effipanel/search.jpg" target="_blank" rel="noopener" aria-label="查看统一搜索界面原图">
+        <img src="/projects/effipanel/search.jpg" width="1280" height="600" alt="统一搜索将最近使用、收藏、剪贴文本和内置操作展示在同一个结果列表中" loading="lazy" decoding="async" />
+      </a>
+      <figcaption>03 / 统一搜索：不同类型的入口，共用一套选择与执行方式。点击查看原图 ↗</figcaption>
+    </figure>
+  </section>
+
+  <section class="case-section" id="clipboard" aria-labelledby="clipboard-title">
+    <p class="section-number">03 / 剪贴历史</p>
+    <div class="section-heading">
+      <h2 id="clipboard-title">复制过的内容，可以接着用</h2>
+      <p>从“刚才复制了什么”，回到手头的文档。</p>
+    </div>
+    <div class="copy">
+      <p>剪贴历史可以记录文本、图片和文件，并提供分类筛选、关键词搜索和收藏。连续复制几段材料后，你可以按内容查找目标，而不是反复回到原来的网页或窗口重新复制。收藏适合保留经常复用的文字，普通记录则按设置的数量管理。</p>
+      <p>列表支持 <kbd>↑</kbd> <kbd>↓</kbd> 选择、<kbd>Enter</kbd> 贴回，也可以用数字键 <kbd>1</kbd>–<kbd>9</kbd> 快速操作前几条记录。默认尝试贴回此前使用的应用；如果只想更新系统剪贴板，可以在设置中选择“仅复制”，再自行粘贴。</p>
+      <p>文本条目还有去空白、JSON 格式化、大小写和时间戳转换等处理入口。整理网页文字时可以先清理首尾空白；检查一段结构化内容时，可以先格式化再使用。这些处理就在条目旁边，不需要为一个小步骤打开另一个工具。</p>
+    </div>
+    <figure class="product-shot focused-shot clipboard-shot">
+      <a href="/projects/effipanel/clipboard.jpg" target="_blank" rel="noopener" aria-label="查看剪贴历史与文本变换菜单原图">
+        <img src="/projects/effipanel/clipboard.jpg" width="1280" height="900" alt="剪贴历史展示演示待办、JSON、网址和文件，并展开去空白、JSON 格式化等文本变换选项" loading="lazy" decoding="async" />
+      </a>
+      <figcaption>04 / 搜索、收藏与文本变换都围绕当前条目展开。内容为演示数据，点击查看原图 ↗</figcaption>
+    </figure>
+  </section>
+
+  <section class="case-section" id="screenshot" aria-labelledby="screenshot-title">
+    <p class="section-number">04 / 截图与标注</p>
+    <div class="section-heading">
+      <h2 id="screenshot-title">截下画面，也把重点留下</h2>
+      <p>从框选区域到补充说明，连贯完成。</p>
+    </div>
+    <div class="copy">
+      <p>进入截图后，画面会冻结，你可以框选区域，也可以借助窗口吸附定位。需要截下展开的菜单或提示时，可以使用延迟截图：先启动三秒倒计时，再把目标状态打开，等待画面冻结。</p>
+      <p>标注工具包括矩形、箭头、文字、马赛克、画笔、高亮和序号。反馈界面问题时，用矩形圈出区域、箭头指向细节，再补一段简短说明；整理操作步骤时，可以用序号建立阅读顺序。画错后可以撤销、重做，继续调整同一张图。</p>
+      <p>处理完成后，可以复制图片或保存到指定目录。默认截图确认行为是仅复制，也能在设置中改为复制并保存。贴屏功能适合把参考图留在屏幕上，一边对照一边工作；取色功能则用于读取画面中的颜色。下面使用演示资料展示矩形和箭头标注的实际效果。</p>
+    </div>
+    <figure class="product-shot">
+      <a href="/projects/effipanel/screenshot-annotation.jpg" target="_blank" rel="noopener" aria-label="查看截图标注效果原图">
+        <img src="/projects/effipanel/screenshot-annotation.jpg" width="1280" height="720" alt="逸扉面板真实标注工具在演示周会纪要上添加红色矩形与箭头，突出下一步工作" loading="lazy" decoding="async" />
+      </a>
+      <figcaption>05 / 真实标注组件与演示资料：框出重点，再用箭头说明关注位置。点击查看原图 ↗</figcaption>
+    </figure>
+  </section>
+
+  <section class="case-section" id="draft" aria-labelledby="draft-title">
+    <p class="section-number">05 / 草稿与计算</p>
+    <div class="section-heading">
+      <h2 id="draft-title">临时想到的事，先有地方放</h2>
+      <p>记一句话，算一个数，再回到当前任务。</p>
+    </div>
+    <div class="copy">
+      <p>草稿提供多个独立的输入格，可以放临时待办、会议时间或准备粘贴的文字。内容会自动保存，不必先选择文件名和存放位置。不同小任务可以分开放，回头查看时也更容易辨认。</p>
+      <p>输入简单算式时，草稿会显示计算结果。例如输入 <code>6 * 7</code>，下方显示 <code>42</code>。按 <kbd>Enter</kbd> 会复制结果并新建一格；普通文字则复制当前内容。需要在同一格内换行时，使用 <kbd>Shift</kbd> + <kbd>Enter</kbd>。它适合随手记录和简单计算，长期材料仍可以整理到自己的文档或笔记中。</p>
+    </div>
+    <figure class="product-shot focused-shot draft-shot">
+      <a href="/projects/effipanel/draft.jpg" target="_blank" rel="noopener" aria-label="查看草稿与计算结果原图">
+        <img src="/projects/effipanel/draft.jpg" width="1280" height="900" alt="三个草稿输入格分别展示六乘七等于四十二、站会时间和面板唤起快捷键" loading="lazy" decoding="async" />
+      </a>
+      <figcaption>06 / 算式和文字可以分格保留，Enter 复制当前内容或计算结果。点击查看原图 ↗</figcaption>
+    </figure>
+  </section>
+
+  <section class="case-section" id="appearance" aria-labelledby="appearance-title">
+    <p class="section-number">06 / 界面与主题</p>
+    <div class="section-heading">
+      <h2 id="appearance-title">看得清，也更容易找到</h2>
+      <p>这次优化围绕四个具体的阅读与操作问题展开。</p>
+    </div>
+    <div class="improvements">
+      <div><h3>首页更有层次</h3><p>降低空键的存在感，让已绑定入口更突出；底部最近使用、收藏和快捷操作获得更清晰的空间。</p></div>
+      <div><h3>图标更加统一</h3><p>内置功能采用同一套线性图标，应用与网页保留原有图标，兼顾一致性与熟悉感。</p></div>
+      <div><h3>字号与间距有规律</h3><p>统一标题、标签、留白和圆角，减少文字挤在一起的感觉；较长名称可通过提示查看完整内容。</p></div>
+      <div><h3>颜色服务于状态</h3><p>用中性背景区分层次，用强调色提示选中与操作；浅色、深色和跟随系统主题可以按习惯切换。</p></div>
+    </div>
+    <div class="copy">
+      <p>设置中的强调色可以调整按钮和选中状态的视觉重心。切换主题时，面板、搜索、弹窗与设置页会沿用对应的颜色规则。无论白天查看资料，还是在较暗的环境里继续工作，都可以选择适合自己的外观。</p>
+    </div>
+    <figure class="product-shot">
+      <a href="/projects/effipanel/home-dark.jpg" target="_blank" rel="noopener" aria-label="查看逸扉面板深色首页原图">
+        <img src="/projects/effipanel/home-dark.jpg" width="1280" height="900" alt="逸扉面板深色首页，键位、最近使用、收藏和快捷操作采用统一的深色表面与青绿色强调色" loading="lazy" decoding="async" />
+      </a>
+      <figcaption>07 / 深色主题保留同样的布局与操作层级。点击查看原图 ↗</figcaption>
+    </figure>
+  </section>
+
+  <section class="case-section" id="getting-started" aria-labelledby="getting-started-title">
+    <p class="section-number">07 / 首次使用指南</p>
+    <div class="section-heading">
+      <h2 id="getting-started-title">先配置三个每天都用的入口</h2>
+      <p>从一个文件夹、一个网站和一个内置操作开始。</p>
+    </div>
+    <ol class="steps">
+      <li><h3>打开面板</h3><p>启动应用后按 <kbd>Alt</kbd> + <kbd>Space</kbd>，也可以点击系统托盘图标。托盘菜单提供显示面板、设置、重新注册热键和退出等入口。</p></li>
+      <li><h3>建立第一个绑定</h3><p>点击空键，选择“文件夹”，填入或选择常用目录，再确认绑定。用同样的方法添加固定网址和截图操作，先让少量键位真正参与日常工作。</p></li>
+      <li><h3>试一次搜索和收藏</h3><p>在面板中按 <kbd>Space</kbd>，输入入口名称并执行。把经常使用的项目加入收藏；不常用的入口可以继续通过搜索找到。</p></li>
+      <li><h3>调整热键与窗口行为</h3><p>在设置中录制唤起组合与直达修饰键，并检测冲突。随后按需要选择失焦隐藏、始终置顶和开机启动，让面板出现和收起的方式符合自己的工作习惯。</p></li>
+    </ol>
+    <div class="copy subsection">
+      <h3>记住这些常用按键</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">所在位置</th><th scope="col">按键</th><th scope="col">作用</th></tr></thead>
+          <tbody>
+            <tr><td>其他应用中</td><td><kbd>Alt</kbd> + <kbd>Space</kbd></td><td>默认唤起或隐藏面板</td></tr>
+            <tr><td>面板网格</td><td><kbd>Space</kbd></td><td>打开统一搜索</td></tr>
+            <tr><td>统一搜索</td><td><kbd>↑</kbd> <kbd>↓</kbd> / <kbd>Enter</kbd></td><td>选择并执行结果</td></tr>
+            <tr><td>剪贴历史</td><td><kbd>1</kbd>–<kbd>9</kbd></td><td>快速操作前几条记录</td></tr>
+            <tr><td>草稿输入格</td><td><kbd>Enter</kbd></td><td>复制文字或结果，并新建格</td></tr>
+            <tr><td>面板首页</td><td><kbd>Esc</kbd></td><td>隐藏面板</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>默认不会注册 <kbd>Ctrl</kbd> + <kbd>C</kbd>、<kbd>V</kbd>、<kbd>A</kbd>、<kbd>Z</kbd> 等系统保留直达组合，相应键位仍可以在面板中使用。若唤起组合被输入法或其他启动器占用，可以换一组按键，再通过设置或托盘重新注册。</p>
+    </div>
+    <figure class="product-shot">
+      <a href="/projects/effipanel/settings.jpg" target="_blank" rel="noopener" aria-label="查看热键设置与检测结果原图">
+        <img src="/projects/effipanel/settings.jpg" width="1280" height="565" alt="设置页分别配置唤起热键和直达修饰键，并列出可用组合与系统保留组合" loading="lazy" decoding="async" />
+      </a>
+      <figcaption>08 / 唤起与直达分别配置，检测结果会说明各组合的状态。点击查看原图 ↗</figcaption>
+    </figure>
+    <div class="copy subsection">
+      <h3>让数据和设置便于管理</h3>
+      <p>应用配置、草稿、收藏和剪贴历史保存在本机的 <code>%APPDATA%\EffiPanel\</code> 目录。配置导出与导入用于迁移热键、绑定和设置；草稿及剪贴历史等内容可以通过备份数据目录另行保留。截图保存目录可自行选择，默认位置是图片文件夹中的“逸扉截图”。</p>
+      <p>剪贴历史支持暂停记录、设置记录数量和应用忽略名单，你可以决定哪些内容适合保留。网站图标会按需联网获取，打开网页也会交给浏览器；本地保存的工作内容与这些联网行为应分别理解和管理。</p>
+    </div>
+  </section>
+
+  <section class="case-section availability" id="availability" aria-labelledby="availability-title">
+    <p class="section-number">08 / 当前状态与获取</p>
+    <div class="section-heading">
+      <h2 id="availability-title">逸扉面板 · EffiPanel<br />优化版预览</h2>
+      <p>先了解产品如何使用，再关注正式发布。</p>
+    </div>
+    <div class="copy">
+      <p>本页展示优化后的产品界面，配图均使用演示数据；截图标注图由真实标注组件对演示资料操作后采集。页面说明的是当前功能与使用方式，后续体验会继续迭代。</p>
+      <p>逸扉面板使用 Tauri 2 构建桌面应用，React 与 TypeScript 负责界面，Rust 负责系统交互和本地数据处理。当前介绍面向 Windows 用户，正式下载入口将在发布后补充。</p>
+    </div>
+    <div class="availability-footer">
+      <p><strong>正式下载入口将在发布后补充。</strong><span>本页将作为 EffiPanel 的产品介绍与获取入口。</span></p>
+      <a href="/projects/">返回项目列表 <span aria-hidden="true">↗</span></a>
+    </div>
+  </section>
+</ProjectLayout>
+
+<style>
+  .hero, .contents, .case-section { width: 100%; max-width: 70rem; margin-inline: auto; }
+  .hero { padding-block: 0.3rem 3rem; }
+  .hero-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 1.8rem; }
+  .eyebrow, .section-number, .contents-label { margin: 0; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; color: var(--accent-warm); }
+  .preview-label { padding: 0.25rem 0.65rem; border: 1px solid var(--rule); font-family: var(--font-ui); font-size: 0.75rem; color: var(--ink-muted); background: var(--paper-raised); }
+  .hero-copy { display: grid; gap: 1.6rem 3rem; align-items: end; margin-bottom: 2.3rem; }
+  h1 { margin: 0 0 1.3rem; font-size: clamp(2.7rem, 4.8vw, 4rem); line-height: 1.15; letter-spacing: 0.02em; }
+  h1 span { display: block; margin-top: 0.6rem; font-family: var(--font-ui); font-size: 0.42em; font-weight: 500; letter-spacing: 0.04em; color: var(--accent); }
+  .hero-title { margin: 0; font-size: clamp(1.35rem, 2.1vw, 1.75rem); line-height: 1.65; font-weight: 600; }
+  .hero-intro > p:first-child { margin: 0; color: var(--ink-muted); line-height: 1.95; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 1.5rem; }
+  .hero-actions a { display: inline-flex; gap: 1rem; align-items: center; padding: 0.6rem 0.9rem; border: 1px solid var(--rule); font-family: var(--font-ui); font-size: 0.85rem; text-decoration: none; background: var(--paper-raised); }
+  .hero-actions .action-primary { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+  .hero-note { margin: 1rem 0 0; font-family: var(--font-ui); font-size: 0.76rem; color: var(--ink-soft); }
+  .product-shot { margin: 2rem 0 0; min-width: 0; }
+  .product-shot > a { display: block; border: 0; }
+  .product-shot img { display: block; width: 100%; height: auto; border: 1px solid var(--rule); border-radius: 0.4rem; box-shadow: 0 0.6rem 1.8rem rgb(15 34 49 / 0.08); }
+  .product-shot figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.3rem 1rem; margin-top: 0.65rem; font-family: var(--font-ui); font-size: 0.75rem; line-height: 1.7; color: var(--ink-soft); }
+  .contents { display: flex; flex-wrap: wrap; align-items: center; gap: 0.65rem 1.1rem; padding-block: 1rem; border-block: 3px double var(--rule); }
+  .contents a { font-family: var(--font-ui); font-size: 0.8rem; text-decoration: none; }
+  .contents-label { color: var(--ink-faint); margin-right: 0.4rem; }
+  .case-section { padding-block: 3.5rem; border-bottom: 1px dashed var(--rule); scroll-margin-top: 1.5rem; }
+  .section-number { margin-bottom: 0.9rem; }
+  .section-heading { margin-bottom: 1.7rem; }
+  .section-heading h2 { margin: 0 0 0.7rem; font-size: clamp(1.7rem, 3vw, 2.45rem); line-height: 1.45; text-wrap: balance; }
+  .section-heading > p { margin: 0; color: var(--ink-soft); }
+  .copy { max-width: 52rem; }
+  .copy p, .binding-copy > p { margin: 0 0 1.1rem; line-height: 1.95; }
+  .copy p:last-child { margin-bottom: 0; }
+  h3 { margin: 0 0 0.8rem; font-size: 1.2rem; line-height: 1.65; }
+  .scenarios { display: grid; gap: 1.5rem; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+  .scenarios > div > span { font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent-warm); }
+  .scenarios h3 { margin: 0.4rem 0 0.6rem; font-size: 1.05rem; }
+  .scenarios p { margin: 0; color: var(--ink-muted); font-size: 0.9rem; }
+  .binding-layout { display: grid; gap: 2rem 3rem; align-items: center; margin-top: 2rem; }
+  .binding-types { margin: 0 0 1.5rem; }
+  .binding-types > div { display: grid; grid-template-columns: 4.5rem 1fr; gap: 1rem; padding-block: 0.9rem; border-bottom: 1px solid var(--rule); }
+  .binding-types dt { color: var(--accent); font-weight: 600; }
+  .binding-types dd { margin: 0; color: var(--ink-muted); }
+  .binding-shot { width: 100%; max-width: 26rem; margin: 0 auto; }
+  /* Focus inline previews on the tool; the link retains the complete screenshot. */
+  .binding-shot > a, .focused-shot > a { position: relative; overflow: hidden; border: 1px solid var(--rule); border-radius: 0.4rem; }
+  .binding-shot > a { aspect-ratio: 512 / 672; }
+  .binding-shot img { position: absolute; width: 250%; max-width: none; left: -75%; top: -16.9643%; border: 0; border-radius: 0; box-shadow: none; }
+  .focused-shot img { position: absolute; inset: 0 auto auto 0; border: 0; border-radius: 0; box-shadow: none; }
+  .clipboard-shot > a { aspect-ratio: 1280 / 620; }
+  .draft-shot > a { aspect-ratio: 1280 / 425; }
+  .subsection { margin-top: 2.2rem; }
+  .improvements { display: grid; gap: 1.5rem 2rem; margin: 0 0 1.6rem; }
+  .improvements > div { border-left: 2px solid var(--rule); padding-left: 1rem; }
+  .improvements h3 { margin-bottom: 0.5rem; }
+  .improvements p { margin: 0; color: var(--ink-muted); }
+  .steps { margin: 0; padding: 0; list-style: none; counter-reset: step; display: grid; gap: 1.2rem; max-width: 52rem; }
+  .steps li { position: relative; padding-left: 3.1rem; counter-increment: step; }
+  .steps li::before { content: '0' counter(step); position: absolute; left: 0; top: 0.1rem; font-family: var(--font-mono); font-size: 1.25rem; color: var(--accent-warm); }
+  .steps h3 { margin-bottom: 0.3rem; font-size: 1.1rem; }
+  .steps p { margin: 0; }
+  kbd { display: inline-block; padding: 0.03em 0.3em; border: 1px solid var(--rule); border-bottom-width: 2px; border-radius: 3px; font-family: var(--font-mono); font-size: 0.82em; line-height: 1.5; white-space: nowrap; background: var(--paper-raised); }
+  code { font-family: var(--font-mono); font-size: 0.88em; overflow-wrap: anywhere; }
+  .table-wrap { overflow-x: auto; margin: 1rem 0 1.3rem; }
+  table { width: 100%; border-collapse: collapse; font-family: var(--font-ui); font-size: 0.87rem; }
+  th, td { padding: 0.75rem 0.8rem; border-bottom: 1px solid var(--rule); text-align: left; vertical-align: top; }
+  th { font-weight: 600; background: var(--paper-raised); }
+  .availability { border: 0; padding-bottom: 2rem; }
+  .availability-footer { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 1.2rem; margin-top: 2rem; padding-block: 1.5rem; border-block: 3px double var(--rule); }
+  .availability-footer p { margin: 0; }
+  .availability-footer strong, .availability-footer p span { display: block; }
+  .availability-footer p span { margin-top: 0.3rem; font-size: 0.85rem; color: var(--ink-soft); }
+  .availability-footer > a { font-family: var(--font-ui); font-size: 0.85rem; white-space: nowrap; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  @media (min-width: 52rem) {
+    .hero-copy { grid-template-columns: 0.95fr 1.05fr; }
+    .scenarios { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .binding-layout { grid-template-columns: 1fr minmax(18rem, 0.85fr); }
+    .improvements { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 40rem) {
+    .hero { padding-bottom: 2rem; }
+    .hero-meta { margin-bottom: 1.4rem; }
+    .hero-copy { gap: 1.3rem; margin-bottom: 1.7rem; }
+    .case-section { padding-block: 2.6rem; }
+    .section-heading h2 { text-wrap: wrap; }
+    .contents { gap: 0.6rem 1rem; }
+    .binding-types > div { grid-template-columns: 3.5rem 1fr; gap: 0.6rem; }
+    .copy p, .binding-copy > p { line-height: 1.9; }
+    th, td { padding: 0.65rem 0.4rem; }
+  }
+</style>
