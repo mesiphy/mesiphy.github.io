@@ -1,6 +1,6 @@
 # 惚恍
 
-个人技术博客，部署在 GitHub Pages：<https://mesiphy.github.io/>
+个人技术博客，主站部署在 GitHub Pages：<https://mesiphy.github.io/>。支持通过 Cloudflare Workers Static Assets 同步发布备用入口。
 
 用 Astro 构建，纯静态输出，零客户端框架。「惚恍」是 mesiphy 记录学习、构建、思考与持续探索的个人档案。视觉上保留暖灰纸面、印刷质感、淡纹理与等宽标题，并逐步转向”持续增补的记录”这一语义。
 
@@ -30,7 +30,7 @@ npm run check   # TypeScript / Astro 类型检查
 git add -A && git commit -m "post: 新文章标题" && git push
 ```
 
-push 到 `main` 之后 GitHub Actions 自动构建部署，约一两分钟生效。**本地不需要跑 build**，但建议先 `npm run check` 拦一下 frontmatter 写错。
+push 到 `main` 之后 GitHub Actions 自动构建部署；接入 Cloudflare Git 集成后，Cloudflare 也会独立构建并发布同一份源码。**本地不需要跑 build**，但建议先 `npm run check` 拦一下 frontmatter 写错。
 
 ## 目录结构
 
@@ -48,6 +48,7 @@ src/
   pages/                路由。文件路径即 URL
   styles/global.css     设计系统：色板、字体栈、排版、代码块
 .github/workflows/      GitHub Actions 自动部署
+wrangler.jsonc          Cloudflare Workers 静态托管配置
 ```
 
 `public/` 和 `src/assets/` 的区别：`public/` 原样拷贝、路径可预测，适合正文里 `![](/foo.png)` 引用的图；`src/assets/` 会被 Astro 压缩、转 webp、生成多档 srcset 并把宽高写进 HTML，适合由组件渲染的图（目前只有脉络图）。
@@ -130,11 +131,70 @@ App --> User: 登录成功
 
 ## 部署
 
+### GitHub Pages 主站
+
 push 到 `main` 就会触发 `.github/workflows/deploy.yml`，跑 `npm ci` → `npm run check` → `npm run build`，然后发布到 GitHub Pages。仓库设置里 Pages 的 Source 需要选 **GitHub Actions**（不是 Deploy from a branch）。
 
 `npm run check` 在部署流程里是一道闸：frontmatter 写错分类名、漏必填字段会在这里失败，而不是等到线上页面变成空白。所以部署失败先看 Actions 日志的这一步。
 
 站点是用户站（仓库名 `mesiphy.github.io`），部署在域名根路径，所以 `astro.config.mjs` 里不需要配 `base`。如果将来改成项目仓库（比如 `/blog/`），必须同时设置 `base`，否则全站资源会 404。
+
+### Cloudflare Workers 备用入口
+
+使用 Workers Static Assets 直接托管 `dist/`，保持 Astro 纯静态输出，不需要 `@astrojs/cloudflare` 适配器、服务端入口或数据库。`wrangler.jsonc` 指定资源目录及 `404-page` 路由策略：不存在的地址返回现有 `404.html` 和 HTTP 404。
+
+首次接入：
+
+1. 登录 Cloudflare，进入 **Workers & Pages → Create application → Import a repository**。
+2. 连接 GitHub，选择 `mesiphy/mesiphy.github.io`，按下表配置后保存并部署。
+3. 首次部署成功后，在 Worker 的域名设置中确认并记录实际的 `workers.dev` 地址。
+
+| 配置项 | 值 |
+| --- | --- |
+| Worker 名称 | `mesiphy-blog`，必须与 `wrangler.jsonc` 一致 |
+| 生产分支 | `main` |
+| 根目录 | 仓库根目录，留空或填 `.` |
+| 构建变量 | `NODE_VERSION=24` |
+| 构建变量 | `SKIP_DEPENDENCY_INSTALL=1` |
+| 构建命令 | `npm ci && npm run check && npm run build` |
+| 部署命令 | `npx wrangler deploy` |
+| 非生产分支部署命令 | `npx wrangler versions upload`，用于预览 |
+
+根目录不是本地外层的 `my-websites`，也不需要再填写 `mesiphy.github.io`。`SKIP_DEPENDENCY_INSTALL` 关闭自动安装，由构建命令中的 `npm ci` 严格按锁文件安装依赖。Wrangler 已作为开发依赖纳入锁文件。使用 Workers Builds 的默认部署凭据即可，无需在仓库中保存 API token。
+
+**构建必须运行 `npm run build`**，不能只运行 `astro build`，否则会遗漏 `dist/pagefind/` 搜索索引。部署地址形如 `https://mesiphy-blog.<账户子域名>.workers.dev`，具体子域名以 Cloudflare 控制台为准。
+
+接入后，每次更新 `main`，GitHub Actions 和 Cloudflare 各自构建并发布；非生产分支的预览部署不替换生产版本。若构建失败，查看对应平台的构建日志，修复后重试；如需回退 Cloudflare，使用控制台的部署回滚功能选择已验证的版本。
+
+#### 本地验证
+
+在仓库根目录使用 Node.js 24，依次运行（前一步成功后再继续）：
+
+```bash
+npm ci
+npm run check
+npm run build
+npx wrangler deploy --dry-run
+npx wrangler dev --ip 127.0.0.1 --port 8787
+```
+
+`--dry-run` 只检查部署配置，不发布网站；`wrangler dev` 在本地模拟 Workers 静态托管。打开 `http://127.0.0.1:8787/` 检查：
+
+- 首页、文章详情、分类、中文标签、项目页可访问，直接刷新正常。
+- `/search/` 搜索能返回结果，点击结果后仍在当前站点。
+- 字体、图片正常加载，主题切换有效。
+- 不存在的路径显示自定义 404 页面，并返回 HTTP 404。
+- `/rss.xml`、`/sitemap-index.xml` 和 `/robots.txt` 可访问。
+
+上线后在实际 `workers.dev` 地址重复上述检查，并核对两平台部署的 `main` 提交编号。
+
+#### 主站地址约定
+
+GitHub Pages 是主站，Cloudflare 是备用入口。canonical、Open Graph URL、RSS、sitemap、robots.txt 中的站点地图及项目结构化数据继续指向 `https://mesiphy.github.io`，站内导航和搜索结果使用现有站内路径。不要为备用入口改写 `site` 或自动使用预览域名作为 canonical。
+
+部分文章图表通过浏览器请求 `kroki.io` 加载，增加 Cloudflare 部署不会消除这项外部依赖。使用自托管 Kroki 时，在两个平台的构建环境中配置相同的 `KROKI_BASE_URL`。
+
+参考：[Astro 部署指南](https://docs.astro.build/en/guides/deploy/cloudflare/)、[Workers 构建配置](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)、[构建环境](https://developers.cloudflare.com/workers/ci-cd/builds/build-image/)。
 
 ## 换成自己的域名
 
