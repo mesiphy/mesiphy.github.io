@@ -2,7 +2,7 @@
 title: 勇气的心理学
 date: 2026-08-01
 description: 勇气不是没有恐惧，而是恐惧存在时依然行动。从心理学视角拆解勇气的构成、可训练性，以及它和鲁莽的边界。
-category: 知识分享
+category: 知识笔记
 tags: [哲学人生, 心理学, 读书笔记]
 draft: true
 ---

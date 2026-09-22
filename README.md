@@ -1,8 +1,8 @@
 # 惚恍
 
-个人站点，包含首页、音乐和图文三个板块。主站部署在 GitHub Pages：<https://mesiphy.github.io/>，支持通过 Cloudflare Workers Static Assets 同步发布备用入口。
+个人站点，主导航包含首页、音乐、知识笔记、惚恍和 AI。主站部署在 GitHub Pages：<https://mesiphy.github.io/>，支持通过 Cloudflare Workers Static Assets 同步发布备用入口。
 
-用 Astro 构建，纯静态输出，零客户端框架。首页用整屏插画承接音乐与图文入口；音乐、文章和项目沿用水彩纸面与中文衬线字体。音乐使用网易云官方播放器，感想独立保存在 Markdown 中。
+用 Astro 构建，纯静态输出，零客户端框架。首页展示整屏插画，音乐与三个文章栏目入口统一放在顶部导航；音乐、文章和项目沿用水彩纸面与中文衬线字体。音乐使用网易云官方播放器，感想独立保存在 Markdown 中。
 
 ## 本地开发
 
@@ -47,7 +47,7 @@ src/
   assets/graph/         知识脉络图（走 Astro 资源管线，会被自动压缩）
   consts.ts             站点标题、分类登记表、导航、每页条数、脉络图配置
   content.config.ts     frontmatter 的 schema 校验
-  home.config.ts        首页背景路径、桌面/手机裁切位置和介绍
+  home.config.ts        首页背景路径、桌面/手机裁切位置
   lib/posts.ts          文章读取、排序、分组、日期与阅读时间格式化
   lib/graph.ts          构建时解析脉络图文件（按栏目 slug 匹配，读取修改时间）
   components/           Header / Footer / PostCard / KnowledgeGraph / TableOfContents 等
@@ -60,11 +60,28 @@ wrangler.jsonc          Cloudflare Workers 静态托管配置
 
 `public/` 和 `src/assets/` 的区别：`public/` 原样拷贝、路径可预测，适合正文里 `![](/foo.png)` 引用的图；`src/assets/` 会被 Astro 压缩、转 webp、生成多档 srcset 并把宽高写进 HTML，适合由组件渲染的图（目前只有脉络图）。
 
-## 三个板块与首页背景
+## 栏目、导航与首页背景
 
-- `/`：图片首页。`public/home/background-left.webp` 来自用户提供的「网站背景左侧版本.png」；桌面和手机共用这张图，手机裁切位置偏向左侧，保留画面中的人物。
+- `/`：图片首页，仅保留顶部导航、背景与页脚，中央不展示站名、引文或重复入口。`public/home/background-left.webp` 来自用户提供的「网站背景左侧版本.png」；桌面和手机共用这张图，手机裁切位置偏向左侧，保留画面中的人物。
 - `/music/`：专辑、曲目搜索和风格筛选。专辑详情位于 `/music/albums/<id>/`，单曲与感想位于 `/music/<id>/`。
-- `/writing/`：承接旧首页的分类、最新文章、项目和知识脉络。原有 `/posts/`、文章详情、项目、分类、归档、标签、搜索与 RSS 地址保持不变。
+- `/knowledge/`：知识笔记，读书、学习、通用技术与工具实践。
+- `/huhuang/`：惚恍，个人感悟、情绪、自我理解与尚未成形的思考。
+- `/ai/`：AI，容纳 AI 学习、辅助编程、产品方法与项目实践；`#projects` 是逸扉面板和 LearnBranch 的项目入口，项目详情地址保持不变。
+- 栏目页展示简介、已发布文章数量和按日期倒序排列的全部文章，不分页。开发环境另外显示草稿及草稿数量；文章上下篇限定在同一栏目。
+- 内容辅助导航为“全部文章 · 脉络 · 归档 · 标签 · 搜索”。文章页高亮所属栏目，项目详情页高亮 AI；公共内容工具页不高亮具体栏目。
+
+旧入口通过 Astro 生成带 canonical 和 noindex 的静态跳转页，兼容 GitHub Pages 和 Cloudflare：
+
+| 旧地址 | 新地址 |
+| --- | --- |
+| `/writing/` | `/posts/` |
+| `/categories/knowledge/` | `/knowledge/` |
+| `/categories/tech/` | `/posts/`（原文章已拆入知识笔记与 AI） |
+| `/categories/ai-product/` | `/ai/` |
+| `/categories/huxi-huangxi/` | `/huhuang/` |
+| `/projects/` | `/ai/#projects` |
+
+文章地址仍为 `/posts/<id>/`。归档、标签、搜索、脉络与 RSS 地址不变；旧入口不加入站点地图。
 
 替换首页图片时，把文件放到 `public/home/`，修改 `src/home.config.ts` 的 `desktopImage` 与 `mobileImage`。`desktopPosition` 和 `mobilePosition` 接受 CSS `object-position`（如 `50% 35%`）。首页固定使用该图片，不受文章的亮暗主题影响。
 
@@ -128,7 +145,7 @@ draft: true
 title: 文章标题
 date: 2026-08-04
 description: 一两句话说清这篇讲什么。会出现在列表页、搜索结果和分享卡片里。
-category: 技术博客
+category: 知识笔记
 tags: [Git, 工程实践]
 draft: false
 ---
@@ -143,12 +160,14 @@ frontmatter 字段说明：
 | `title` | 是 | 文章标题 |
 | `date` | 是 | 发布日期，`YYYY-MM-DD` |
 | `description` | 是 | 摘要，用于列表页和 SEO |
-| `category` | 是 | 必须是 `知识分享` / `技术博客` / `AI+产品` / `惚兮恍兮，恍兮惚兮` 之一，写错构建会直接失败 |
+| `category` | 是 | 必须是 `知识笔记` / `惚恍` / `AI` 之一，写错构建会直接失败 |
 | `tags` | 否 | 数组，自由添加，默认空 |
 | `draft` | 否 | `true` 时只在 `npm run dev` 可见，不会发布到线上 |
 | `updated` | 否 | 显著修订后填写，会在文章页显示"最后修订于" |
 
-分类是刻意受限的：schema 从 `src/consts.ts` 的登记表生成，拼错分类名构建会报错而不是静默产生一个空分类页。新增分类需要先在 `src/consts.ts` 的 `CATEGORIES` 里登记。
+每篇文章只有一个主栏目，按主要讨论的问题归类；标签用于交叉主题，使用 AI 辅助创作本身不决定栏目归属。通用产品方法和 AI 产品项目归 AI，Git、建站与读书笔记归知识笔记，情绪和自我理解归惚恍。
+
+分类是刻意受限的：schema 从 `src/consts.ts` 的登记表生成，拼错分类名构建会报错。新增栏目需登记 `CATEGORIES` 的 `name`、`slug`、`href` 和 `description`，其中 `href` 为 `/<slug>/`；栏目页与主导航由该配置生成。
 
 `draft: true` 的文章不会出现在构建后的站点，包括列表、归档、标签、RSS 和搜索索引；公开 Git 仓库中的源文件仍然可见，草稿标记不是隐私保护。
 
@@ -177,17 +196,16 @@ App --> User: 登录成功
 
 | 文件名 | 对应栏目 |
 | --- | --- |
-| `knowledge-graph-knowledge.png` | 知识分享 |
-| `knowledge-graph-tech.png` | 技术博客 |
-| `knowledge-graph-ai-product.png` | AI+产品 |
-| `knowledge-graph-huxi-huangxi.png` | 惚兮恍兮，恍兮惚兮 |
+| `knowledge-graph-knowledge.png` | 知识笔记 |
+| `knowledge-graph-huhuang.png` | 惚恍 |
+| `knowledge-graph-ai.png` | AI |
 
-换图就是**覆盖同名文件**，不需要改任何代码。图文首页右栏按四个分类显示缩略图，`/graph/` 显示大图。
+换图就是**覆盖同名文件**，不需要改任何代码。`/graph/` 按三个栏目显示大图，栏目文章列表不展示脉络图。
 
 - 扩展名不限：`png` / `jpg` / `jpeg` / `webp` / `avif` / `svg` 都认。同名多扩展名同时存在时的取用优先级见 `src/lib/graph.ts`
 - 建议宽度 1600px 以上。Astro 会自动压缩、转 webp、生成多档 srcset，不必自己压
 - 图下方的「更新于」日期取自**文件修改时间**，不用手填
-- 缺哪张图，对应位置显示「待生成」加期望的文件名，不会渲染碎图，也不影响构建
+- 缺哪张图，对应位置显示「脉络图待更新」，不会渲染碎图，也不影响构建；文件命名参考上表
 - 新增栏目时会自动多出一个位子，文件名由 `CATEGORIES` 的 slug 推导
 
 一个栏目一张而不是全站合成一张：栏目之间刻意互斥，本来就没有枝干可连，合成图只会让生图模型为了构图饱满而硬连几笔并不存在的边。

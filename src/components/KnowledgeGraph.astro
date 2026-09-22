@@ -5,7 +5,7 @@ import { formatDate, isoDate } from '../lib/posts';
 import { widthsFor, type CategoryGraph } from '../lib/graph';
 
 interface Props {
-  /** rail = 首页右栏缩略图（可点进大图）；full = /graph/ 页的大图 */
+  /** rail = 可复用的缩略图；full = /graph/ 页的大图 */
   variant?: 'rail' | 'full';
   graph: CategoryGraph;
   /** 抢先加载。只给首屏那一张用，其余保持懒加载 */
@@ -13,12 +13,12 @@ interface Props {
 }
 
 const { variant = 'rail', graph, eager = false } = Astro.props;
-const { category, alt, count, image, expectedFile } = graph;
+const { category, alt, count, image } = graph;
 
 // rail 栏宽 13rem ≈ 208px；full 走主列，按 --column 的上限 68rem ≈ 1100px 取样
 const displayWidth = variant === 'rail' ? 208 : 1100;
 const sizes = variant === 'rail' ? '208px' : '(min-width: 44rem) min(68rem, 50vw), 100vw';
-const categoryHref = `/categories/${category.slug}/`;
+const categoryHref = category.href;
 const loading = eager ? 'eager' : 'lazy';
 ---
 
@@ -93,8 +93,7 @@ const loading = eager ? 'eager' : 'lazy';
       </>
     ) : (
       <p class="graph-empty">
-        待生成
-        <span class="graph-empty-hint">{expectedFile}</span>
+        脉络图待更新
       </p>
     )
   }
@@ -201,20 +200,9 @@ const loading = eager ? 'eager' : 'lazy';
     opacity: 0.72;
   }
 
-  .graph-empty-hint {
-    display: block;
-    margin-top: 0.3rem;
-    font-size: 0.62rem;
-    word-break: break-all;
-    font-family: var(--font-mono);
-  }
-
   .graph-full .graph-empty {
     padding: 2.5rem 1rem;
     font-size: 0.8rem;
   }
 
-  .graph-full .graph-empty-hint {
-    font-size: 0.72rem;
-  }
 </style>

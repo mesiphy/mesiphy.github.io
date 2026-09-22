@@ -22,10 +22,10 @@ import { CATEGORIES, SITE_AUTHOR } from '../consts';
     <ul>
       {CATEGORIES.map((c) => (
         <li>
-          <a href={`/categories/${c.slug}/`}>{c.name}</a> —— {c.description}
+          <a href={c.href}>{c.name}</a> —— {c.description}
         </li>
       ))}
-      <li><a href="/projects/">项目</a> —— 把一个想法从问题、原型一路推向真实可用的过程。</li>
+      <li><a href="/ai/#projects">AI · 项目实践</a> —— 把一个想法从问题、原型一路推向真实可用的过程。</li>
     </ul>
 
     <h2>关于这个站</h2>

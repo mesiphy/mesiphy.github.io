@@ -30,7 +30,7 @@ function extRank(p: string): number {
   return i === -1 ? EXT_PRIORITY.length : i;
 }
 
-/** 从路径里取出 slug：.../knowledge-graph-ai-pm.png → ai-pm */
+/** 从路径里取出 slug：.../knowledge-graph-ai.png → ai */
 function slugOf(globPath: string): string {
   const filename = globPath.split('/').pop() ?? '';
   return filename.slice(`${GRAPH.prefix}-`.length).replace(/\.[^.]+$/, '');
@@ -67,8 +67,6 @@ export interface CategoryGraph {
   count: number;
   /** 没放图时为 undefined，页面据此显示占位提示而不是渲染碎图 */
   image?: GraphImage;
-  /** 缺图时提示该把文件放哪，免得日后翻代码 */
-  expectedFile: string;
 }
 
 /** slug → 图片，取扩展名优先级最高的那张 */
@@ -97,7 +95,7 @@ function resolveBySlug(): Map<string, GraphImage> {
 
 /**
  * 每个分类一项，顺序跟随 consts.ts 里登记的顺序。
- * 缺图的分类也会返回（image 为 undefined），这样首页能提示该补哪张图。
+ * 缺图的栏目也会返回（image 为 undefined），脉络页显示简短占位。
  *
  * counts 由调用方传入：这个模块不碰 content collection，
  * 免得把 node:fs 的依赖扩散到内容层。
@@ -110,7 +108,6 @@ export function getCategoryGraphs(counts: Map<string, number>): CategoryGraph[] 
     alt: graphAlt(category.name),
     count: counts.get(category.name) ?? 0,
     image: bySlug.get(category.slug),
-    expectedFile: `${GRAPH.prefix}-${category.slug}.png`,
   }));
 }
 

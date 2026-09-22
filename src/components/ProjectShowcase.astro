@@ -1,21 +1,9 @@
----
-import BaseLayout from '../../layouts/BaseLayout.astro';
-
-const title = '项目';
-const description = '产品判断、AI 协作编排与工程验收的完整项目案例。';
----
-
-<BaseLayout {title} {description}>
-  <header class="page-head">
-    <p class="meta">PROJECTS / 项目档案</p>
-    <h1>项目</h1>
-    <p>不只展示成品，也保留问题如何被定义、方案如何改变，以及 AI 生成结果如何经过人工验收。</p>
-  </header>
-
+<section id="projects" class="projects" aria-labelledby="projects-title">
+  <h2 id="projects-title" class="section-title">项目实践</h2>
   <section class="project-row" aria-labelledby="effipanel-title">
     <div>
       <p class="project-meta">2026 · Windows 桌面应用 · 优化版预览</p>
-      <h2 id="effipanel-title"><a href="/projects/effipanel/">逸扉面板 · EffiPanel</a></h2>
+      <h3 id="effipanel-title"><a href="/projects/effipanel/">逸扉面板 · EffiPanel</a></h3>
       <p>把键位启动、统一搜索、剪贴历史、截图标注和草稿，集中到一个随时可唤起的效率面板。</p>
       <p class="project-role">功能图解 · 使用场景 · 首次上手指南</p>
     </div>
@@ -25,31 +13,17 @@ const description = '产品判断、AI 协作编排与工程验收的完整项�
   <section class="project-row" aria-labelledby="learnbranch-title">
     <div>
       <p class="project-meta">2026 · Windows 桌面应用 · AI 产品工程</p>
-      <h2 id="learnbranch-title"><a href="/projects/learnbranch/">LearnBranch</a></h2>
+      <h3 id="learnbranch-title"><a href="/projects/learnbranch/">LearnBranch</a></h3>
       <p>把线性的 AI 对话，变成可追溯、可审核、可整理的学习树。</p>
       <p class="project-role">产品定义 · AI 协作编排 · 代码阅读与人工验收</p>
     </div>
     <a class="project-link" href="/projects/learnbranch/" aria-label="阅读 LearnBranch 完整案例">阅读案例 →</a>
   </section>
-</BaseLayout>
+</section>
 
 <style>
-  .page-head {
-    padding-block: 1rem 2.5rem;
-    border-bottom: 3px double var(--rule);
-  }
-
-  .page-head h1 {
-    margin: 0.2rem 0 0.8rem;
-    font-size: clamp(2.6rem, 6vw, 4rem);
-  }
-
-  .page-head p:last-child {
-    max-width: var(--measure);
-    margin: 0;
-    color: var(--ink-soft);
-  }
-
+  .projects { scroll-margin-top: 2rem; margin-block: 2rem 2.75rem; }
+  .projects > h2 { margin: 0; }
   .project-row {
     display: grid;
     gap: 1.4rem;
@@ -72,12 +46,12 @@ const description = '产品判断、AI 协作编排与工程验收的完整项�
     color: var(--ink-faint);
   }
 
-  .project-row h2 {
+  .project-row h3 {
     margin: 0 0 0.55rem;
     font-size: 1.8rem;
   }
 
-  .project-row h2 a,
+  .project-row h3 a,
   .project-link {
     text-decoration: none;
   }

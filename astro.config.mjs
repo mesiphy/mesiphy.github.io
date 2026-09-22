@@ -4,11 +4,22 @@ import sitemap from '@astrojs/sitemap';
 import { satteri } from '@astrojs/markdown-satteri';
 import satteriDiagrams from './src/plugins/satteri-diagrams.mjs';
 
+// 纯静态跳转页可同时用于 GitHub Pages 和 Cloudflare 静态托管。
+const redirects = {
+  '/writing/': '/posts/',
+  '/categories/knowledge/': '/knowledge/',
+  '/categories/tech/': '/posts/',
+  '/categories/ai-product/': '/ai/',
+  '/categories/huxi-huangxi/': '/huhuang/',
+  '/projects/': '/ai/#projects',
+};
+
 // 用户站（仓库名 mesiphy.github.io）部署在域名根路径，因此不需要配置 base。
 // 如果将来改成项目仓库（例如 /blog/），必须同时设置 base，否则全站资源 404。
 export default defineConfig({
   site: 'https://mesiphy.github.io',
-  integrations: [sitemap()],
+  redirects,
+  integrations: [sitemap({ filter: (page) => !(new URL(page).pathname in redirects) })],
   markdown: {
     processor: satteri({
       mdastPlugins: [

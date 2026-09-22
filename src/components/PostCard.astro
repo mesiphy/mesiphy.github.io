@@ -17,7 +17,7 @@ const category = categoryByName(post.data.category);
     </time>
     {
       category && (
-        <a href={`/categories/${category.slug}/`} class="stamp">
+        <a href={category.href} class="stamp">
           {category.name}
         </a>
       )

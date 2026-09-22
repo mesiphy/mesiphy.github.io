@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostList from '../components/PostList.astro';
+import ProjectShowcase from '../components/ProjectShowcase.astro';
+import { getPosts, groupByCategory, type Post } from '../lib/posts';
+import type { CATEGORIES } from '../consts';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return groupByCategory(posts).map(({ category, posts }) => ({
+    params: { category: category.slug },
+    props: { category, posts },
+  }));
+}
+
+interface Props {
+  category: (typeof CATEGORIES)[number];
+  posts: Post[];
+}
+
+const { category, posts } = Astro.props;
+const publishedCount = posts.filter((post) => !post.data.draft).length;
+const draftCount = posts.length - publishedCount;
+// 栏目与站名同名时，在浏览器标题中区分栏目和首页。
+const title = category.slug === 'huhuang' ? '惚恍栏目' : category.name;
+---
+
+<BaseLayout {title} description={category.description} currentCategory={category.slug}>
+  <header class="column-head">
+    <h1>{category.name}</h1>
+    <p class="column-description">{category.description}</p>
+    <p class="column-count meta">
+      {publishedCount} 篇文章
+      {draftCount > 0 && <span> · 另有 {draftCount} 篇草稿，仅本地可见</span>}
+    </p>
+  </header>
+
+  {category.slug === 'ai' && <ProjectShowcase />}
+
+  <section aria-label={`${category.name}文章`}>
+    {category.slug === 'ai' && <h2 class="section-title">文章</h2>}
+    <PostList {posts} />
+  </section>
+</BaseLayout>
+
+<style>
+  .column-head { padding-block: 1rem 1.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--rule); }
+  .column-head h1 { margin: 0 0 .65rem; font-size: clamp(2.6rem, 6vw, 4rem); line-height: 1.25; }
+  .column-description { max-width: var(--measure); margin: 0 0 .7rem; color: var(--ink-soft); }
+  .column-count { margin: 0; color: var(--ink-faint); }
+</style>

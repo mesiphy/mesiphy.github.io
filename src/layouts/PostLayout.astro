@@ -18,7 +18,7 @@ const category = categoryByName(post.data.category);
 const minutes = readingTime(post.body ?? '');
 ---
 
-<BaseLayout {title} {description} type="article" publishedDate={date} fullWidth>
+<BaseLayout {title} {description} type="article" publishedDate={date} currentCategory={category?.slug} fullWidth>
   <div class="layout">
     <article class="article">
       <header class="head">
@@ -31,7 +31,7 @@ const minutes = readingTime(post.body ?? '');
         <h1>{title}</h1>
         <p class="head-desc">{description}</p>
         <div class="head-tail">
-          {category && <a href={`/categories/${category.slug}/`} class="stamp">{category.name}</a>}
+          {category && <a href={category.href} class="stamp">{category.name}</a>}
           {
             tags.map((tag) => (
               <a href={`/tags/${encodeURIComponent(tag)}/`} class="tag">

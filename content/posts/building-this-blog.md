@@ -2,7 +2,7 @@
 title: 用 Astro 和 GitHub Pages 搭一个博客
 date: 2026-08-04
 description: 从零开始搭建这个站点的过程记录。为什么先打通发布管道再谈设计，以及内容目录为什么要放在框架之外。
-category: 技术博客
+category: 知识笔记
 tags: [Astro, GitHub Pages, 静态站点, 建站]
 ---
 

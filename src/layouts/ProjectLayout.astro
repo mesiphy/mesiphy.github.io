@@ -10,13 +10,16 @@ interface Props {
 const { title, description, image } = Astro.props;
 ---
 
-<BaseLayout {title} {description} {image} fullWidth>
+<BaseLayout {title} {description} {image} currentCategory="ai" fullWidth>
+  <p class="project-crumb meta"><a href="/ai/#projects">AI / 项目实践</a></p>
   <article class="project-case" data-pagefind-body>
     <slot />
   </article>
 </BaseLayout>
 
 <style>
+  .project-crumb { margin: 0 0 1rem; }
+  .project-crumb a { color: var(--ink-muted); text-decoration: none; }
   .project-case {
     width: 100%;
     min-width: 0;

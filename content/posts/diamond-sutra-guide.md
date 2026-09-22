@@ -2,7 +2,7 @@
 title: 金刚经导读
 date: 2026-07-28
 description: 抛开宗教立场，把《金刚经》当作一部关于认知边界的文本来读。核心是「破相」——对一切概念化认知的拆解。
-category: 知识分享
+category: 知识笔记
 tags: [哲学人生, 读书笔记, 佛学]
 draft: true
 ---

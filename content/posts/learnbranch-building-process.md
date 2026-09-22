@@ -3,7 +3,7 @@ title: LearnBranch 构建实录：从 Obsidian 插件到 Tauri 桌面应用
 date: 2026-08-19
 updated: 2026-08-25
 description: 记录 LearnBranch 如何从分支学习问题出发，经历 Obsidian 插件、交互原型、Tauri 主线、数据迁移与 Windows 分发验收。
-category: 技术博客
+category: AI
 tags: [LearnBranch, Tauri, React, Rust, Obsidian, 构建实录]
 draft: false
 ---
