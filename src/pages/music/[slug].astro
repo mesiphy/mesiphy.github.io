@@ -18,7 +18,13 @@ const cover = track.data.cover ?? album.data.cover;
 ---
 <BaseLayout title={track.data.title} description={track.data.description} image={cover} type="article" publishedDate={track.data.date} fullWidth>
   <article class="music-page">
-    <p class="music-crumb"><a href="/music/">音乐</a> / <a href={albumUrl(album)}>{album.data.title}</a></p>
+    <nav class="music-crumb" aria-label="当前位置">
+      <a class="music-back" href="/music/">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 5-7 7 7 7M5 12h14" /></svg>
+        返回音乐
+      </a>
+      <span aria-hidden="true"> / </span><a href={albumUrl(album)}>{album.data.title}</a>
+    </nav>
     <div data-pagefind-body>
       <header class="music-detail-head">
         <div class="music-detail-cover" data-pagefind-ignore><MusicCover src={cover} title={track.data.title} eager /></div>
@@ -31,7 +37,10 @@ const cover = track.data.cover ?? album.data.cover;
           {track.data.updated && <p class="meta">最后修订于 <time datetime={isoDate(track.data.updated)}>{formatDate(track.data.updated)}</time></p>}
           <p class="music-detail-description">{track.data.description}</p>
           <div data-pagefind-ignore>
-            <a class="music-source" href={neteaseUrl(track.data.neteaseId)} target="_blank" rel="noopener noreferrer">在网易云收听 ↗</a>
+            <a class="music-source music-source-primary" href={neteaseUrl(track.data.neteaseId)} target="_blank" rel="noopener noreferrer">
+              在网易云收听
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10" /></svg>
+            </a>
             {track.data.embed && <a class="music-source" href="#music-player" data-preview data-song-id={track.data.neteaseId} data-song-title={track.data.title} data-song-artist={track.data.artist} data-song-embed="true">站内试听</a>}
           </div>
         </div>

@@ -1,0 +1,58 @@
+---
+import MusicCover from './MusicCover.astro';
+import { trackUrl, type Track, type Album } from '../../lib/music';
+
+interface Props { track: Track; album: Album }
+const { track, album } = Astro.props;
+---
+
+<a class="track-card" href={trackUrl(track)} aria-label={`${track.data.title} · ${track.data.artist}，阅读介绍`}>
+  <MusicCover src={track.data.cover ?? album.data.cover} title={track.data.title} />
+  {track.data.draft && <span class="draft">草稿</span>}
+  <div class="caption">
+    <h3 title={track.data.title}>{track.data.title}</h3>
+    <p title={track.data.artist}>{track.data.artist}</p>
+  </div>
+</a>
+
+<style>
+  .track-card {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    isolation: isolate;
+    overflow: hidden;
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    background: var(--paper-raised);
+    color: #fff;
+    text-decoration: none;
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  }
+  .track-card :global(music-cover) { position: absolute; inset: 0; height: 100%; border: 0; }
+  .track-card :global(.fallback) { align-items: start; padding-top: 16%; font-size: clamp(1.2rem, 3vw, 1.8rem); line-height: 1.2; }
+  .track-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgb(26 40 50 / 0) 28%, rgb(26 40 50 / .72) 68%, rgb(26 40 50 / .96));
+    pointer-events: none;
+  }
+  .caption { position: absolute; z-index: 1; inset: auto 0 0; padding: 1rem; }
+  h3 { margin: 0; font: 600 1rem/1.5 var(--font-editorial); }
+  .caption p { margin: .35rem 0 0; color: rgb(255 255 255 / .86); font: .75rem/1.6 var(--font-ui); }
+  h3, .caption p { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; }
+  .caption p { -webkit-line-clamp: 1; }
+  .draft { position: absolute; z-index: 1; top: .65rem; right: .65rem; padding: .15rem .55rem; border: 1px solid rgb(255 255 255 / .35); border-radius: 99px; color: #fff; background: rgb(26 40 50 / .8); font: .7rem/1.6 var(--font-ui); }
+  .track-card:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .track-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 10px 24px rgb(26 40 50 / .18); }
+  }
+  @media (prefers-reduced-motion: reduce) { .track-card { transition: none; } }
+  @media (max-width: 40rem) {
+    .caption { padding: .7rem; }
+    h3 { font-size: .9rem; }
+    .caption p { font-size: .72rem; }
+  }
+</style>

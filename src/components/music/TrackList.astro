@@ -1,8 +1,9 @@
 ---
 import { albumUrl, trackUrl, neteaseUrl, type Track, type Album } from '../../lib/music';
 import { formatDate } from '../../lib/posts';
-interface Props { tracks: Track[]; albums: Album[]; filterable?: boolean; title?: string }
-const { tracks, albums, filterable = false, title = '全部曲目' } = Astro.props;
+import TrackCard from './TrackCard.astro';
+interface Props { tracks: Track[]; albums: Album[]; filterable?: boolean; title?: string; layout?: 'list' | 'grid' }
+const { tracks, albums, filterable = false, title = '全部曲目', layout = 'list' } = Astro.props;
 const albumMap = new Map(albums.map((album) => [album.id, album]));
 const tags = [...new Set(tracks.flatMap((track) => track.data.tags))].sort((a, b) => a.localeCompare(b, 'zh-CN'));
 ---
@@ -22,23 +23,25 @@ const tags = [...new Set(tracks.flatMap((track) => track.data.tags))].sort((a, b
       {tags.map((tag) => <button type="button" aria-pressed="false" data-tag={tag}>{tag}</button>)}
     </div>
   )}
-  <div class="track-rows">
+  <div class={layout === 'grid' ? 'track-grid' : 'track-rows'}>
     {tracks.map((track, index) => {
       const album = albumMap.get(track.data.album.id)!;
       return (
-        <article class="track" data-track data-search-text={`${track.data.title} ${track.data.artist} ${album.data.title}`} data-tags={JSON.stringify(track.data.tags)}>
-          <span class="track-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-          <div class="track-info">
-            <h3><a href={trackUrl(track)}>{track.data.title}</a></h3>
-            <p class="track-meta">{track.data.artist} · <a href={albumUrl(album)}>{album.data.title}</a></p>
-            <p class="track-meta">{track.data.released ? '发行' : '收录'}于 {formatDate(track.data.released ?? track.data.date)}{track.data.draft && ' · 草稿'}</p>
-          </div>
-          <p class="track-description">{track.data.description}</p>
-          <div class="track-actions">
-            {track.data.embed && <a class="preview" href={`${trackUrl(track)}#music-player`} data-preview data-song-id={track.data.neteaseId} data-song-title={track.data.title} data-song-artist={track.data.artist} data-song-embed="true" aria-label={`试听：${track.data.title}`}>▷ 试听</a>}
-            <a href={trackUrl(track)}>阅读感想</a>
-            <a class="source" href={neteaseUrl(track.data.neteaseId)} target="_blank" rel="noopener noreferrer" aria-label={`在网易云收听：${track.data.title}`}>网易云 ↗</a>
-          </div>
+        <article class={layout === 'grid' ? 'track-tile' : 'track'} data-track data-search-text={`${track.data.title} ${track.data.artist} ${album.data.title}`} data-tags={JSON.stringify(track.data.tags)}>
+          {layout === 'grid' ? <TrackCard {track} {album} /> : <>
+            <span class="track-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+            <div class="track-info">
+              <h3><a href={trackUrl(track)}>{track.data.title}</a></h3>
+              <p class="track-meta">{track.data.artist} · <a href={albumUrl(album)}>{album.data.title}</a></p>
+              <p class="track-meta">{track.data.released ? '发行' : '收录'}于 {formatDate(track.data.released ?? track.data.date)}{track.data.draft && ' · 草稿'}</p>
+            </div>
+            <p class="track-description">{track.data.description}</p>
+            <div class="track-actions">
+              {track.data.embed && <a class="preview" href={`${trackUrl(track)}#music-player`} data-preview data-song-id={track.data.neteaseId} data-song-title={track.data.title} data-song-artist={track.data.artist} data-song-embed="true" aria-label={`试听：${track.data.title}`}>▷ 试听</a>}
+              <a href={trackUrl(track)}>阅读感想</a>
+              <a class="source" href={neteaseUrl(track.data.neteaseId)} target="_blank" rel="noopener noreferrer" aria-label={`在网易云收听：${track.data.title}`}>网易云 ↗</a>
+            </div>
+          </>}
         </article>
       );
     })}
@@ -48,12 +51,14 @@ const tags = [...new Set(tracks.flatMap((track) => track.data.tags))].sort((a, b
 </track-list>
 <style>
   track-list { display: block; }
+  .track-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 22px; }
+  .track-tile { min-width: 0; max-width: 250px; }
   .track-toolbar { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
   h2 { font-size: 1.65rem; }
   .count { margin-left: .55rem; font-family: var(--font-ui); font-size: .78rem; font-weight: 400; color: var(--ink-soft); white-space: nowrap; }
   .search input { width: min(100%, 18rem); font: .8rem var(--font-ui); color: var(--ink); background: var(--paper-raised); border: 1px solid var(--rule); border-radius: 4px; padding: .65rem .85rem; }
   .filters { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
-  .filters[hidden], .search[hidden], .track[hidden], .empty[hidden] { display: none; }
+  .filters[hidden], .search[hidden], [data-track][hidden], .empty[hidden] { display: none; }
   .filters button { font: .75rem var(--font-ui); color: var(--ink-muted); background: transparent; border: 1px solid var(--rule); border-radius: 99px; padding: .45rem 1rem; cursor: pointer; }
   .filters button[aria-pressed='true'] { color: var(--paper); background: var(--accent); border-color: var(--accent); }
   .track { display: grid; grid-template-columns: 2rem minmax(0, 1.3fr) minmax(0, 1fr) auto; align-items: center; gap: 1.25rem; padding-block: 1.35rem; border-top: 1px solid var(--rule); }
@@ -77,6 +82,7 @@ const tags = [...new Set(tracks.flatMap((track) => track.data.tags))].sort((a, b
     .track-actions { grid-column: 3; grid-row: 1; }
   }
   @media (max-width: 40rem) {
+    .track-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
     .track-toolbar { align-items: start; }
     .search { width: 100%; }
     .search input { width: 100%; }

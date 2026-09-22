@@ -25,6 +25,7 @@ const socialImage = image ? new URL(image, Astro.site) : undefined;
 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="only light" />
 <title>{pageTitle}</title>
 <meta name="description" content={description} />
 <meta name="author" content={SITE_AUTHOR} />
@@ -44,13 +45,3 @@ const socialImage = image ? new URL(image, Astro.site) : undefined;
 <link rel="sitemap" href="/sitemap-index.xml" />
 <link rel="alternate" type="application/rss+xml" title={SITE_TITLE} href="/rss.xml" />
 <meta name="generator" content={Astro.generator} />
-
-{/* 内联执行，避免暗色模式在首屏出现白闪 */}
-<script is:inline>
-  (() => {
-    const stored = localStorage.getItem('theme');
-    const theme =
-      stored ?? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    document.documentElement.dataset.theme = theme;
-  })();
-</script>

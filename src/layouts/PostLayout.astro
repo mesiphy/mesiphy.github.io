@@ -236,10 +236,6 @@ const minutes = readingTime(post.body ?? '');
     color: var(--accent);
   }
 
-  :global(:root[data-theme='dark']) .head h1::after {
-    opacity: 0.82;
-  }
-
   @media (max-width: 40rem) {
     .head h1 {
       font-size: clamp(2.15rem, 10vw, 2.8rem);

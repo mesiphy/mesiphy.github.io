@@ -122,11 +122,6 @@ const loading = eager ? 'eager' : 'lazy';
     border-color: var(--accent);
   }
 
-  /* 暗色下生图模型基本都产出白底图，压一点亮度免得刺眼 */
-  :root[data-theme='dark'] .graph img {
-    filter: brightness(0.88) contrast(1.04);
-  }
-
   .graph-head {
     display: flex;
     align-items: baseline;
