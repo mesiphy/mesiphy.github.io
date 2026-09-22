@@ -1,3 +1,24 @@
+/* 音乐首页、专辑与单曲共用插画；居中裁切，窄屏保留画面中央的人物。 */
+body[data-section='music'] {
+  --music-wash: rgb(245 239 227 / 0.38);
+}
+
+/* 插画下方颜色较深，辅助文字也需要足够的对比度。 */
+:root:not([data-theme='dark']) body[data-section='music'] {
+  --ink-muted: #40484f;
+  --ink-soft: #40484f;
+  --ink-faint: #495159;
+}
+
+:root[data-theme='dark'] body[data-section='music'] {
+  --music-wash: rgb(24 27 31 / 0.82);
+}
+
+body[data-section='music']::before {
+  background-image: linear-gradient(var(--music-wash), var(--music-wash)), var(--music-bg);
+  background-position: center;
+}
+
 .music-page { max-width: 68rem; margin-inline: auto; }
 .music-head { padding: .2rem 0 2rem; }
 .music-head h1 { font-size: clamp(2.5rem, 5vw, 3.6rem); letter-spacing: .06em; line-height: 1.35; }

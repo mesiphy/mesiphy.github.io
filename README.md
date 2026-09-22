@@ -2,7 +2,7 @@
 
 个人站点，主导航包含首页、音乐、知识笔记、惚恍和 AI。主站部署在 GitHub Pages：<https://mesiphy.github.io/>，支持通过 Cloudflare Workers Static Assets 同步发布备用入口。
 
-用 Astro 构建，纯静态输出，零客户端框架。首页展示整屏插画，音乐与三个文章栏目入口统一放在顶部导航；音乐、文章和项目沿用水彩纸面与中文衬线字体。音乐使用网易云官方播放器，感想独立保存在 Markdown 中。
+用 Astro 构建，纯静态输出，零客户端框架。首页展示整屏插画，音乐与三个文章栏目入口统一放在顶部导航；音乐使用粉色湖畔插画，知识笔记使用复古纸张背景，其余内容沿用水彩纸面，全站内容使用中文衬线字体。音乐使用网易云官方播放器，感想独立保存在 Markdown 中。
 
 ## 本地开发
 
@@ -27,6 +27,8 @@ npm test        # 草稿过滤、专辑引用、排序与播放器地址的回�
 | 加一张专辑 | `content/albums/` | `小写英文-连字符.md`，文件名即专辑标识 |
 | 加一首歌或修改感想 | `content/music/` | `小写英文-连字符.md`，正文就是感想 |
 | 换首页背景 | `public/home/` | 图片路径与裁切位置在 `src/home.config.ts` 配置 |
+| 换音乐栏目背景 | `src/assets/backgrounds/music-scene.png` | 覆盖同名图片，构建时自动转成 WebP |
+| 换知识笔记背景 | `src/assets/backgrounds/knowledge-paper.png` | 覆盖同名图片，构建时自动转成 WebP |
 | 换某栏目的脉络图 | `src/assets/graph/` | `knowledge-graph-<栏目slug>.png` |
 | 加图片、附件 | `public/` | 原样拷到站点根目录，正文里写 `/图片名.png` |
 
@@ -44,6 +46,7 @@ content/albums/         专辑元数据和介绍
 content/music/          单曲元数据和感想
 public/                 直接拷贝到站点根目录的静态资源（robots.txt、正文里引用的图片等）
 src/
+  assets/backgrounds/   阅读背景与标题笔刷；music-scene.png / knowledge-paper.png 为音乐 / 知识笔记背景
   assets/graph/         知识脉络图（走 Astro 资源管线，会被自动压缩）
   consts.ts             站点标题、分类登记表、导航、每页条数、脉络图配置
   content.config.ts     frontmatter 的 schema 校验
@@ -58,7 +61,7 @@ src/
 wrangler.jsonc          Cloudflare Workers 静态托管配置
 ```
 
-`public/` 和 `src/assets/` 的区别：`public/` 原样拷贝、路径可预测，适合正文里 `![](/foo.png)` 引用的图；`src/assets/` 会被 Astro 压缩、转 webp、生成多档 srcset 并把宽高写进 HTML，适合由组件渲染的图（目前只有脉络图）。
+`public/` 和 `src/assets/` 的区别：`public/` 原样拷贝、路径可预测，适合正文里 `![](/foo.png)` 引用的图；`src/assets/` 中通过 Astro 图片 API 使用的资源会被压缩、转 WebP。脉络图通过图片组件生成 srcset 和宽高；音乐和知识笔记背景通过 `getImage` 生成供 CSS 使用的图片地址。
 
 ## 栏目、导航与首页背景
 
@@ -84,6 +87,10 @@ wrangler.jsonc          Cloudflare Workers 静态托管配置
 文章地址仍为 `/posts/<id>/`。归档、标签、搜索、脉络与 RSS 地址不变；旧入口不加入站点地图。
 
 替换首页图片时，把文件放到 `public/home/`，修改 `src/home.config.ts` 的 `desktopImage` 与 `mobileImage`。`desktopPosition` 和 `mobilePosition` 接受 CSS `object-position`（如 `50% 35%`）。首页固定使用该图片，不受文章的亮暗主题影响。
+
+替换音乐栏目背景时，覆盖 `src/assets/backgrounds/music-scene.png` 即可。当前原图来自「音乐背景图.png」，`BaseLayout.astro` 将它应用到 `/music/` 下的栏目首页、专辑和单曲页，并在构建时转为 WebP。遮罩由 `src/styles/music.css` 中的 `body[data-section='music']` 控制：亮色模式提亮，暗色模式压暗。背景固定在视口，居中、等比铺满，手机端保留中央人物，左右两侧随屏幕比例裁切。替换后运行 `npm run dev` 本地预览；提交并推送到 `main` 后自动部署。
+
+替换知识笔记背景时，覆盖 `src/assets/backgrounds/knowledge-paper.png` 即可。当前原图来自「文字背景.png」，`BaseLayout.astro` 根据 `currentCategory` 将它应用到 `/knowledge/` 及该栏目的文章详情，并在构建时转为 WebP。`src/styles/global.css` 中的 `body[data-category='knowledge']` 控制遮罩：亮色模式稍微提亮，暗色模式压暗以保持文字清晰。背景固定在视口中，桌面和手机均居中、等比铺满，边缘会随屏幕比例裁切。替换后运行 `npm run dev` 本地预览；提交并推送到 `main` 后自动部署。
 
 ## 发布音乐与编辑感想
 

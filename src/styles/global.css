@@ -106,6 +106,20 @@ body::before {
   background-size: cover;
 }
 
+/* 知识笔记列表与文章共用用户提供的纸张背景，按视口固定，长文滚动不拉伸。 */
+body[data-category='knowledge'] {
+  --knowledge-wash: rgb(245 239 227 / 0.25);
+}
+
+:root[data-theme='dark'] body[data-category='knowledge'] {
+  --knowledge-wash: rgb(24 27 31 / 0.82);
+}
+
+body[data-category='knowledge']::before {
+  background-image: linear-gradient(var(--knowledge-wash), var(--knowledge-wash)), var(--knowledge-bg);
+  background-position: center;
+}
+
 @media (max-width: 40rem) {
   :root {
     --watercolor-bg: url('../assets/backgrounds/watercolor-light-mobile.webp');
