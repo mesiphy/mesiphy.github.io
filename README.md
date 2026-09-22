@@ -66,7 +66,7 @@ wrangler.jsonc          Cloudflare Workers 静态托管配置
 ## 栏目、导航与首页背景
 
 - `/`：图片首页，仅保留顶部导航、背景与页脚，中央不展示站名、引文或重复入口。`public/home/background-left.webp` 来自用户提供的「网站背景左侧版本.png」；桌面和手机共用这张图，手机裁切位置偏向左侧，保留画面中的人物。
-- `/music/`：专辑、曲目搜索和风格筛选。专辑详情位于 `/music/albums/<id>/`，单曲与感想位于 `/music/<id>/`。
+- `/music/`：歌曲卡片墙、曲目搜索和风格筛选，专辑区域位于歌曲下方。点击整张歌曲卡片进入介绍页，再通过“在网易云收听”按钮打开原平台。专辑详情位于 `/music/albums/<id>/`，单曲与感想位于 `/music/<id>/`。
 - `/knowledge/`：知识笔记，读书、学习、通用技术与工具实践。
 - `/huhuang/`：惚恍，个人感悟、情绪、自我理解与尚未成形的思考。
 - `/ai/`：AI，容纳 AI 学习、辅助编程、产品方法与项目实践；`#projects` 是逸扉面板和 LearnBranch 的项目入口，项目详情地址保持不变。
@@ -86,11 +86,13 @@ wrangler.jsonc          Cloudflare Workers 静态托管配置
 
 文章地址仍为 `/posts/<id>/`。归档、标签、搜索、脉络与 RSS 地址不变；旧入口不加入站点地图。
 
-替换首页图片时，把文件放到 `public/home/`，修改 `src/home.config.ts` 的 `desktopImage` 与 `mobileImage`。`desktopPosition` 和 `mobilePosition` 接受 CSS `object-position`（如 `50% 35%`）。首页固定使用该图片，不受文章的亮暗主题影响。
+各栏目的背景、遮罩和文字配色固定由页面样式决定。站点不提供深色、浅色或跟随系统的切换选项，也不再读取浏览器中旧的主题偏好。首页、音乐和知识笔记已有独立背景；惚恍、AI 与公共工具页目前使用默认水彩背景，可以后续分别替换。代码高亮与表单控件使用固定的浅色样式。
 
-替换音乐栏目背景时，覆盖 `src/assets/backgrounds/music-scene.png` 即可。当前原图来自「音乐背景图.png」，`BaseLayout.astro` 将它应用到 `/music/` 下的栏目首页、专辑和单曲页，并在构建时转为 WebP。遮罩由 `src/styles/music.css` 中的 `body[data-section='music']` 控制：亮色模式提亮，暗色模式压暗。背景固定在视口，居中、等比铺满，手机端保留中央人物，左右两侧随屏幕比例裁切。替换后运行 `npm run dev` 本地预览；提交并推送到 `main` 后自动部署。
+替换首页图片时，把文件放到 `public/home/`，修改 `src/home.config.ts` 的 `desktopImage` 与 `mobileImage`。`desktopPosition` 和 `mobilePosition` 接受 CSS `object-position`（如 `50% 35%`）。
 
-替换知识笔记背景时，覆盖 `src/assets/backgrounds/knowledge-paper.png` 即可。当前原图来自「文字背景.png」，`BaseLayout.astro` 根据 `currentCategory` 将它应用到 `/knowledge/` 及该栏目的文章详情，并在构建时转为 WebP。`src/styles/global.css` 中的 `body[data-category='knowledge']` 控制遮罩：亮色模式稍微提亮，暗色模式压暗以保持文字清晰。背景固定在视口中，桌面和手机均居中、等比铺满，边缘会随屏幕比例裁切。替换后运行 `npm run dev` 本地预览；提交并推送到 `main` 后自动部署。
+替换音乐栏目背景时，覆盖 `src/assets/backgrounds/music-scene.png` 即可。当前原图来自「音乐背景图.png」，`BaseLayout.astro` 将它应用到 `/music/` 下的栏目首页、专辑和单曲页，并在构建时转为 WebP。遮罩与文字配色由 `src/styles/music.css` 中的 `body[data-section='music']` 固定控制，提亮背景以保证文字清晰。背景固定在视口，居中、等比铺满，手机端保留中央人物，左右两侧随屏幕比例裁切。替换后运行 `npm run dev` 本地预览；提交并推送到 `main` 后自动部署。
+
+替换知识笔记背景时，覆盖 `src/assets/backgrounds/knowledge-paper.png` 即可。当前原图来自「文字背景.png」，`BaseLayout.astro` 根据 `currentCategory` 将它应用到 `/knowledge/` 及该栏目的文章详情，并在构建时转为 WebP。`src/styles/global.css` 中的 `body[data-category='knowledge']` 使用固定的提亮遮罩以保持文字清晰。背景固定在视口中，桌面和手机均居中、等比铺满，边缘会随屏幕比例裁切。替换后运行 `npm run dev` 本地预览；提交并推送到 `main` 后自动部署。
 
 ## 发布音乐与编辑感想
 
@@ -123,7 +125,7 @@ tags: [钢琴, 氛围]
 neteaseId: '替换为真实歌曲ID'
 embed: false
 noteType: 创作感想
-description: 显示在曲目列表和搜索结果中的感想摘要。
+description: 显示在单曲详情、专辑曲目列表和搜索结果中的感想摘要。
 draft: true
 ---
 
@@ -135,8 +137,9 @@ draft: true
 - `neteaseId` 必须用引号包围，填写链接 `song?id=` 后的数字。专辑可另外填写自己的可选 `neteaseId`，生成平台专辑入口。
 - `noteType` 可填“创作感想”或“听后感”，默认前者。提供的《寂寞烟火（0.8x）》保留网易云署名“泡泡”，文字为听后感初稿，不冒称本站作者的原创作品。
 - `cover` 可省略；单曲默认使用专辑封面。支持站内根路径与 HTTPS 图片地址，加载失败显示文字封面。推荐把自己的封面放到 `public/music/`。
+- 首页卡片展示方形封面、歌名与作者；宽屏自动排列多列，手机为两列。搜索支持曲名、作者、专辑，并可与风格标签组合筛选。卡片使用普通链接，关闭 JavaScript 后仍可打开单曲介绍；搜索与筛选仅在 JavaScript 可用时显示。
 - `updated: YYYY-MM-DD` 用于显著修订后的日期；摘要要同步修改 `description`。
-- `embed` 默认 `false`，此时只显示网易云收听入口；确认目标歌曲可嵌入后再开启。首页和专辑页只在点击“试听”时加载一个共享播放器；单曲详情提供播放器。`auto=0` 不自动播放，切歌或关闭会销毁旧播放器，跳转页面会停止播放。
+- `embed` 默认 `false`，此时只显示网易云收听入口；确认目标歌曲可嵌入后再开启。首页卡片直接打开单曲介绍，不加载播放器；专辑页只在点击“试听”时加载一个共享播放器，单曲详情在启用 `embed` 时提供播放器。`auto=0` 不自动播放，切歌或关闭会销毁旧播放器，跳转页面会停止播放。
 - 平台播放器受歌曲状态、网络和浏览器限制；网页无法可靠读取跨域 iframe 内部的播放结果，因此始终保留网易云链接。不会抓取音频，也不会绕过平台限制。
 - 首次收录的《寂寞烟火（0.8x）》在当前浏览器验证中未呈现网易云播放器，因此暂设 `embed: false`。在自己的浏览器确认该歌曲支持官方外链后，可改为 `true`；站内试听组件已实现。
 - 全文搜索收录已发布的歌曲信息与感想。草稿曲目、草稿专辑及其全部曲目从生产路由与搜索中排除；RSS 继续只订阅原有文章。
@@ -274,7 +277,7 @@ npx wrangler dev --ip 127.0.0.1 --port 8787
 
 - 首页、文章详情、分类、中文标签、项目页可访问，直接刷新正常。
 - `/search/` 搜索能返回结果，点击结果后仍在当前站点。
-- 字体、图片正常加载，主题切换有效。
+- 字体、图片正常加载；切换系统外观或曾保存深色偏好时，栏目背景与文字配色保持一致。
 - 不存在的路径显示自定义 404 页面，并返回 HTTP 404。
 - `/rss.xml`、`/sitemap-index.xml` 和 `/robots.txt` 可访问。
 
