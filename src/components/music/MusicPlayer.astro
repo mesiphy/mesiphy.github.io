@@ -1,0 +1,84 @@
+---
+import { neteaseUrl, neteasePlayerUrl, type Track } from '../../lib/music';
+interface Props { track?: Track }
+const { track } = Astro.props;
+---
+<music-player id="music-player" class="player" hidden={track ? undefined : ''} tabindex="-1" aria-label="音乐试听" data-default-id={track?.data.neteaseId}>
+  <div class="player-top">
+    <div>
+      <p class="player-label">音乐试听</p>
+      <h2 data-player-title>{track ? `${track.data.title} · ${track.data.artist}` : ''}</h2>
+    </div>
+    <button type="button" class="close" data-close aria-label="关闭播放器">关闭 ×</button>
+  </div>
+  <div class="player-frame" data-frame>
+    {track?.data.embed && <iframe src={neteasePlayerUrl(track.data.neteaseId)} title={`${track.data.title}的网易云播放器`} width="330" height="110" loading="lazy" referrerpolicy="no-referrer" />}
+  </div>
+  <p class="player-help" data-player-help>{track?.data.embed ? '点击播放器中的播放键开始收听。若无法播放，可前往网易云。' : '这首歌曲暂不提供站内试听，可前往网易云收听。'}</p>
+  <a data-player-link href={track ? neteaseUrl(track.data.neteaseId) : undefined} target="_blank" rel="noopener noreferrer">在网易云收听 ↗</a>
+  <noscript><p class="player-help">列表试听需要 JavaScript；也可以打开单曲页收听。</p></noscript>
+</music-player>
+<style>
+  .player { display: block; margin: 1.5rem 0; padding: 1.35rem 1.5rem; border-block: 1px solid var(--rule); background: var(--paper-raised); scroll-margin-top: 1rem; }
+  .player[hidden] { display: none; }
+  .player-top { display: flex; justify-content: space-between; gap: 1rem; align-items: start; }
+  .player-label { font-family: var(--font-ui); font-size: .72rem; color: var(--ink-soft); margin: 0 0 .25rem; }
+  h2 { font-size: 1.05rem; line-height: 1.6; overflow-wrap: anywhere; }
+  .close { flex-shrink: 0; color: var(--ink-soft); border: 0; padding: .25rem; font: .78rem var(--font-ui); cursor: pointer; background: transparent; }
+  .player-frame:empty { display: none; }
+  .player-frame { margin-top: .75rem; width: 100%; overflow: hidden; }
+  .player-frame :global(iframe) { display: block; width: 100%; max-width: 330px; height: 110px; border: 0; background: #fff; }
+  .player-help { margin: .65rem 0 .4rem; color: var(--ink-soft); font-size: .78rem; font-family: var(--font-ui); }
+  .player > a { color: var(--accent); font-family: var(--font-ui); font-size: .8rem; }
+  @media (max-width: 40rem) { .player { padding: 1rem .75rem; } }
+</style>
+<script>
+  import { neteaseUrl, neteasePlayerUrl } from '../../lib/music-catalog';
+  class MusicPlayer extends HTMLElement {
+    private trigger: HTMLAnchorElement | null = null;
+    private handleClick = (event: MouseEvent) => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const trigger = (event.target as Element).closest<HTMLAnchorElement>('a[data-preview]');
+      if (!trigger) return;
+      const { songId, songTitle, songArtist, songEmbed } = trigger.dataset;
+      if (!songId || !/^[1-9]\d*$/.test(songId)) return;
+      event.preventDefault();
+      this.querySelector('[data-player-title]')!.textContent = `${songTitle} · ${songArtist}`;
+      const frame = this.querySelector('[data-frame]')!;
+      // 销毁旧 iframe 会同时停止上一首歌曲。
+      frame.replaceChildren();
+      const help = this.querySelector('[data-player-help]')!;
+      if (songEmbed === 'true') {
+        const iframe = document.createElement('iframe');
+        iframe.src = neteasePlayerUrl(songId);
+        iframe.title = `${songTitle}的网易云播放器`;
+        iframe.width = '330'; iframe.height = '110';
+        iframe.referrerPolicy = 'no-referrer';
+        frame.append(iframe);
+        help.textContent = '点击播放器中的播放键开始收听。若无法播放，可前往网易云。';
+      } else {
+        help.textContent = '这首歌曲暂不提供站内试听，可前往网易云收听。';
+      }
+      (this.querySelector('[data-player-link]') as HTMLAnchorElement).href = neteaseUrl(songId);
+      this.hidden = false;
+      this.trigger = trigger;
+      this.focus({ preventScroll: true });
+      this.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'nearest' });
+    };
+    private close = () => {
+      this.querySelector('[data-frame]')!.replaceChildren();
+      this.hidden = true;
+      const returnTo = this.trigger ?? document.querySelector<HTMLAnchorElement>('[data-preview]');
+      returnTo?.focus();
+    };
+    connectedCallback() {
+      document.addEventListener('click', this.handleClick);
+      this.querySelector('[data-close]')?.addEventListener('click', this.close);
+    }
+    disconnectedCallback() {
+      document.removeEventListener('click', this.handleClick);
+      this.querySelector('[data-close]')?.removeEventListener('click', this.close);
+    }
+  }
+  if (!customElements.get('music-player')) customElements.define('music-player', MusicPlayer);
+</script>

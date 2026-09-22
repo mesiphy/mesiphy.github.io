@@ -1,0 +1,122 @@
+---
+import { albumUrl, trackUrl, neteaseUrl, type Track, type Album } from '../../lib/music';
+import { formatDate } from '../../lib/posts';
+interface Props { tracks: Track[]; albums: Album[]; filterable?: boolean; title?: string }
+const { tracks, albums, filterable = false, title = '全部曲目' } = Astro.props;
+const albumMap = new Map(albums.map((album) => [album.id, album]));
+const tags = [...new Set(tracks.flatMap((track) => track.data.tags))].sort((a, b) => a.localeCompare(b, 'zh-CN'));
+---
+<track-list>
+  <div class="track-toolbar">
+    <h2>{title} <span class="count" data-count aria-live="polite">{tracks.length} 首</span></h2>
+    {filterable && tracks.length > 0 && (
+      <label class="search" data-controls hidden>
+        <span class="sr-only">搜索曲名、作者、专辑</span>
+        <input type="search" placeholder="搜索曲名、作者、专辑" data-search />
+      </label>
+    )}
+  </div>
+  {filterable && tags.length > 0 && (
+    <div class="filters" aria-label="按风格筛选" data-controls hidden>
+      <button type="button" aria-pressed="true" data-tag="">全部</button>
+      {tags.map((tag) => <button type="button" aria-pressed="false" data-tag={tag}>{tag}</button>)}
+    </div>
+  )}
+  <div class="track-rows">
+    {tracks.map((track, index) => {
+      const album = albumMap.get(track.data.album.id)!;
+      return (
+        <article class="track" data-track data-search-text={`${track.data.title} ${track.data.artist} ${album.data.title}`} data-tags={JSON.stringify(track.data.tags)}>
+          <span class="track-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+          <div class="track-info">
+            <h3><a href={trackUrl(track)}>{track.data.title}</a></h3>
+            <p class="track-meta">{track.data.artist} · <a href={albumUrl(album)}>{album.data.title}</a></p>
+            <p class="track-meta">{track.data.released ? '发行' : '收录'}于 {formatDate(track.data.released ?? track.data.date)}{track.data.draft && ' · 草稿'}</p>
+          </div>
+          <p class="track-description">{track.data.description}</p>
+          <div class="track-actions">
+            {track.data.embed && <a class="preview" href={`${trackUrl(track)}#music-player`} data-preview data-song-id={track.data.neteaseId} data-song-title={track.data.title} data-song-artist={track.data.artist} data-song-embed="true" aria-label={`试听：${track.data.title}`}>▷ 试听</a>}
+            <a href={trackUrl(track)}>阅读感想</a>
+            <a class="source" href={neteaseUrl(track.data.neteaseId)} target="_blank" rel="noopener noreferrer" aria-label={`在网易云收听：${track.data.title}`}>网易云 ↗</a>
+          </div>
+        </article>
+      );
+    })}
+  </div>
+  <p class="empty" data-no-results hidden>没有找到匹配的曲目，试试其他关键词或风格。</p>
+  {tracks.length === 0 && <p class="empty">曲目还在整理中。留一点空白，等下一段旋律。</p>}
+</track-list>
+<style>
+  track-list { display: block; }
+  .track-toolbar { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+  h2 { font-size: 1.65rem; }
+  .count { margin-left: .55rem; font-family: var(--font-ui); font-size: .78rem; font-weight: 400; color: var(--ink-soft); white-space: nowrap; }
+  .search input { width: min(100%, 18rem); font: .8rem var(--font-ui); color: var(--ink); background: var(--paper-raised); border: 1px solid var(--rule); border-radius: 4px; padding: .65rem .85rem; }
+  .filters { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
+  .filters[hidden], .search[hidden], .track[hidden], .empty[hidden] { display: none; }
+  .filters button { font: .75rem var(--font-ui); color: var(--ink-muted); background: transparent; border: 1px solid var(--rule); border-radius: 99px; padding: .45rem 1rem; cursor: pointer; }
+  .filters button[aria-pressed='true'] { color: var(--paper); background: var(--accent); border-color: var(--accent); }
+  .track { display: grid; grid-template-columns: 2rem minmax(0, 1.3fr) minmax(0, 1fr) auto; align-items: center; gap: 1.25rem; padding-block: 1.35rem; border-top: 1px solid var(--rule); }
+  .track:last-child { border-bottom: 1px solid var(--rule); }
+  .track-number { color: var(--ink-faint); font-family: var(--font-mono); font-size: .75rem; }
+  h3 { font-size: 1.05rem; line-height: 1.6; overflow-wrap: anywhere; }
+  h3 a { text-decoration: none; }
+  .track-meta { margin: .25rem 0 0; font: .72rem/1.6 var(--font-ui); color: var(--ink-soft); overflow-wrap: anywhere; }
+  .track-meta a { color: inherit; text-decoration: none; }
+  .track-description { margin: 0; font-size: .85rem; line-height: 1.9; color: var(--ink-soft); overflow-wrap: anywhere; }
+  .track-actions { display: grid; grid-template-columns: auto auto; align-items: center; gap: .4rem .9rem; font-family: var(--font-ui); font-size: .78rem; }
+  .track-actions a { color: var(--accent); text-decoration: none; white-space: nowrap; }
+  .track-actions .source { grid-column: 1 / -1; justify-self: end; font-size: .7rem; color: var(--ink-soft); }
+  .preview { padding: .35rem .8rem; border: 1px solid var(--accent); border-radius: 4px; }
+  .preview:hover { color: var(--paper); background: var(--accent); }
+  .empty { color: var(--ink-soft); font-size: .9rem; padding: 2.5rem 0; border-block: 1px solid var(--rule); margin: 0; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  @media (max-width: 55rem) {
+    .track { grid-template-columns: 1.5rem minmax(0, 1fr) auto; gap: .7rem 1rem; }
+    .track-description { grid-column: 2 / -1; grid-row: 2; }
+    .track-actions { grid-column: 3; grid-row: 1; }
+  }
+  @media (max-width: 40rem) {
+    .track-toolbar { align-items: start; }
+    .search { width: 100%; }
+    .search input { width: 100%; }
+    .track { grid-template-columns: 1.25rem minmax(0, 1fr); }
+    .track-actions { grid-column: 2; grid-row: 3; display: flex; flex-wrap: wrap; gap: 1rem; margin-top: .3rem; }
+    .track-description { grid-column: 2; }
+    h2 { font-size: 1.4rem; }
+  }
+</style>
+<script>
+  class TrackList extends HTMLElement {
+    connectedCallback() {
+      const input = this.querySelector<HTMLInputElement>('[data-search]');
+      if (!input) return;
+      this.querySelectorAll<HTMLElement>('[data-controls]').forEach((control) => { control.hidden = false; });
+      const rows = [...this.querySelectorAll<HTMLElement>('[data-track]')].map((node) => ({
+        node,
+        text: (node.dataset.searchText ?? '').normalize('NFKC').toLocaleLowerCase('zh-CN'),
+        tags: JSON.parse(node.dataset.tags ?? '[]') as string[],
+      }));
+      let activeTag = '';
+      const update = () => {
+        const keyword = input.value.trim().normalize('NFKC').toLocaleLowerCase('zh-CN');
+        let count = 0;
+        rows.forEach(({ node, text, tags }) => {
+          node.hidden = !(text.includes(keyword) && (!activeTag || tags.includes(activeTag)));
+          if (!node.hidden) count++;
+        });
+        this.querySelector('[data-count]')!.textContent = `${count} / ${rows.length} 首`;
+        this.querySelector<HTMLElement>('[data-no-results]')!.hidden = count > 0;
+      };
+      input.addEventListener('input', update);
+      this.querySelectorAll<HTMLButtonElement>('[data-tag]').forEach((button) => {
+        button.addEventListener('click', () => {
+          activeTag = button.dataset.tag ?? '';
+          this.querySelectorAll('[data-tag]').forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+          update();
+        });
+      });
+    }
+  }
+  if (!customElements.get('track-list')) customElements.define('track-list', TrackList);
+</script>

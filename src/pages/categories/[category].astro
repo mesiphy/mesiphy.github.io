@@ -28,7 +28,7 @@ const { name, description, posts } = Astro.props;
 ---
 
 <BaseLayout title={name} {description}>
-  <p class="crumb meta"><a href="/">首页</a> / 分类</p>
+  <p class="crumb meta"><a href="/writing/">图文</a> / 分类</p>
   <h1 class="page-title">{name}</h1>
   <p class="page-desc">{description}</p>
   <p class="page-sub meta">{posts.length} 篇</p>

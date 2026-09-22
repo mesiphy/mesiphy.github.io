@@ -1,0 +1,26 @@
+---
+interface Props { src?: string; title: string; eager?: boolean }
+const { src, title, eager = false } = Astro.props;
+---
+<music-cover class="music-cover" role="img" aria-label={`${title}封面`}>
+  <span class="fallback" aria-hidden="true">惚恍</span>
+  {src && <img src={src} alt="" width="480" height="480" loading={eager ? 'eager' : 'lazy'} decoding="async" referrerpolicy="no-referrer" />}
+</music-cover>
+<style>
+  .music-cover { position: relative; display: block; aspect-ratio: 1; width: 100%; overflow: hidden; border: 1px solid var(--rule); background: var(--paper-raised); }
+  .fallback { position: absolute; inset: 0; display: grid; place-items: center; color: var(--ink-soft); font-family: var(--font-editorial); font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: .16em; }
+  img { position: relative; display: block; width: 100%; height: 100%; object-fit: cover; }
+  img[hidden] { display: none; }
+</style>
+<script>
+  class MusicCover extends HTMLElement {
+    connectedCallback() {
+      const image = this.querySelector('img');
+      if (!image) return;
+      const hide = () => { image.hidden = true; };
+      image.addEventListener('error', hide, { once: true });
+      if (image.complete && !image.naturalWidth) hide();
+    }
+  }
+  if (!customElements.get('music-cover')) customElements.define('music-cover', MusicCover);
+</script>

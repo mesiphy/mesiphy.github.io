@@ -1,0 +1,27 @@
+---
+import MusicCover from './MusicCover.astro';
+import { albumUrl, type Album } from '../../lib/music';
+import { formatDate } from '../../lib/posts';
+interface Props { album: Album; count: number }
+const { album, count } = Astro.props;
+---
+<article class="album-card">
+  <a href={albumUrl(album)} class="cover-link" aria-label={`查看专辑：${album.data.title}`}>
+    <MusicCover src={album.data.cover} title={album.data.title} />
+  </a>
+  <div class="album-caption">
+    {album.data.draft && <span class="stamp stamp-draft">草稿</span>}
+    <h3><a href={albumUrl(album)}>{album.data.title}</a></h3>
+    <p class="meta">{album.data.released ? '发行' : '收录'}于 {formatDate(album.data.released ?? album.data.date)} · {count} 首</p>
+  </div>
+</article>
+<style>
+  .album-card { min-width: 0; }
+  .cover-link { display: block; transition: transform .2s; }
+  .cover-link:hover { transform: translateY(-3px); }
+  .album-caption { padding-top: .8rem; }
+  h3 { font-size: 1.1rem; line-height: 1.5; overflow-wrap: anywhere; }
+  h3 a { text-decoration: none; }
+  .meta { margin: .3rem 0 0; font-size: .67rem; }
+  .stamp { margin-bottom: .35rem; }
+</style>

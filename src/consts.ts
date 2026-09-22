@@ -1,6 +1,6 @@
 export const SITE_TITLE = '惚恍';
 export const SITE_DESCRIPTION =
-  'mesiphy 的个人站点。记录学习、技术实践、产品思考与正在发生的项目，以及那些仍未完成的问题。';
+  'mesiphy 的个人站点。留下音乐与心绪，记录学习、技术实践、产品思考和正在发生的项目。';
 export const SITE_AUTHOR = 'mesiphy';
 export const SITE_URL = 'https://mesiphy.github.io';
 
@@ -47,24 +47,30 @@ export function categoryByName(name: string) {
 }
 
 export const NAV_LINKS = [
+  { href: '/', label: '首页' },
+  { href: '/music/', label: '音乐' },
+  { href: '/writing/', label: '图文' },
+];
+
+export const WRITING_NAV_LINKS = [
   { href: '/posts/', label: '文章' },
   { href: '/projects/', label: '项目' },
   { href: '/graph/', label: '脉络' },
   { href: '/archive/', label: '归档' },
   { href: '/tags/', label: '标签' },
   { href: '/search/', label: '搜索' },
-  { href: '/about/', label: '关于' },
 ];
 
 /**
- * 知识脉络图：每个分类一张外部生成的图片，首页右栏竖排缩略图，/graph/ 放大图。
+ * 知识脉络图：每个分类一张外部生成的图片，图文首页右栏竖排缩略图，/graph/ 放大图。
  *
  * 换图流程就是覆盖 src/assets/graph/knowledge-graph-<分类slug>.* 这个文件，
  * 不用改代码：扩展名不限（png / jpg / webp / avif / svg 都认），尺寸和
- * 「更新于」日期都在构建时从文件本身读出来。当前三个分类对应：
+ * 「更新于」日期都在构建时从文件本身读出来。当前四个分类对应：
  *   knowledge-graph-knowledge.png
  *   knowledge-graph-tech.png
- *   knowledge-graph-ai-pm.png
+ *   knowledge-graph-ai-product.png
+ *   knowledge-graph-huxi-huangxi.png
  * 文件名由上面 CATEGORIES 的 slug 推导，新增分类会自动多出一个位子。
  *
  * 一个分类一张而不是合成一张：分类之间刻意互斥，本来就没有枝干可连，

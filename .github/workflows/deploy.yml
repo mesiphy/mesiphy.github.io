@@ -36,6 +36,8 @@ jobs:
       # 而不是等到线上页面变成空白
       - run: npm run check
 
+      - run: npm test
+
       # astro build 之后跑 pagefind，生成静态搜索索引
       - run: npm run build
 

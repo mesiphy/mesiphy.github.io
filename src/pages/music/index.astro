@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import AlbumCard from '../../components/music/AlbumCard.astro';
+import TrackList from '../../components/music/TrackList.astro';
+import MusicPlayer from '../../components/music/MusicPlayer.astro';
+import { getMusicCatalog, albumTracks } from '../../lib/music';
+import '../../styles/music.css';
+const { albums, tracks } = await getMusicCatalog();
+---
+<BaseLayout title="音乐" description="把声音留下，也把每一次聆听与创作时的心绪留下。" fullWidth>
+  <div class="music-page">
+    <header class="music-head"><h1>音乐</h1><p>把声音留下，也把心绪留下。</p></header>
+    <section class="music-albums" aria-labelledby="album-heading">
+      <h2 id="album-heading">专辑</h2>
+      {albums.length > 0 ? (
+        <div class="music-album-grid">{albums.map((album) => <AlbumCard {album} count={albumTracks(tracks, album).length} />)}</div>
+      ) : <p class="music-empty">还没有收录专辑。下一段旋律，正在路上。</p>}
+    </section>
+    <MusicPlayer />
+    <TrackList {tracks} {albums} filterable />
+  </div>
+</BaseLayout>

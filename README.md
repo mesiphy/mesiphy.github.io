@@ -1,8 +1,8 @@
 # 惚恍
 
-个人技术博客，主站部署在 GitHub Pages：<https://mesiphy.github.io/>。支持通过 Cloudflare Workers Static Assets 同步发布备用入口。
+个人站点，包含首页、音乐和图文三个板块。主站部署在 GitHub Pages：<https://mesiphy.github.io/>，支持通过 Cloudflare Workers Static Assets 同步发布备用入口。
 
-用 Astro 构建，纯静态输出，零客户端框架。「惚恍」是 mesiphy 记录学习、构建、思考与持续探索的个人档案。视觉上保留暖灰纸面、印刷质感、淡纹理与等宽标题，并逐步转向”持续增补的记录”这一语义。
+用 Astro 构建，纯静态输出，零客户端框架。首页用整屏插画承接音乐与图文入口；音乐、文章和项目沿用水彩纸面与中文衬线字体。音乐使用网易云官方播放器，感想独立保存在 Markdown 中。
 
 ## 本地开发
 
@@ -12,17 +12,21 @@ npm run dev     # http://localhost:4321
 npm run build   # 构建 + 生成搜索索引到 dist/
 npm run preview # 预览 dist/ 的构建产物
 npm run check   # TypeScript / Astro 类型检查
+npm test        # 草稿过滤、专辑引用、排序与播放器地址的回归测试
 ```
 
 搜索索引由 Pagefind 在 `astro build` 之后生成，所以 **搜索功能只在 `build` + `preview` 下可用，`dev` 下是空的**。这是预期行为，不是 bug。
 
 ## 日常更新速查
 
-两件事：加文章、换脉络图。都是往固定位置放文件，然后提交。
+往固定位置放文件，然后提交；音乐和文章沿用同一套 Git 发布流程。
 
 | 要做什么 | 放哪 | 命名 |
 | --- | --- | --- |
 | 加一篇文章 | `content/posts/` | `小写英文-连字符.md`，文件名即 URL |
+| 加一张专辑 | `content/albums/` | `小写英文-连字符.md`，文件名即专辑标识 |
+| 加一首歌或修改感想 | `content/music/` | `小写英文-连字符.md`，正文就是感想 |
+| 换首页背景 | `public/home/` | 图片路径与裁切位置在 `src/home.config.ts` 配置 |
 | 换某栏目的脉络图 | `src/assets/graph/` | `knowledge-graph-<栏目slug>.png` |
 | 加图片、附件 | `public/` | 原样拷到站点根目录，正文里写 `/图片名.png` |
 
@@ -36,11 +40,14 @@ push 到 `main` 之后 GitHub Actions 自动构建部署；接入 Cloudflare Git
 
 ```
 content/posts/          文章源文件（纯 Markdown，刻意放在 src/ 外，方便整体迁移）
+content/albums/         专辑元数据和介绍
+content/music/          单曲元数据和感想
 public/                 直接拷贝到站点根目录的静态资源（robots.txt、正文里引用的图片等）
 src/
   assets/graph/         知识脉络图（走 Astro 资源管线，会被自动压缩）
   consts.ts             站点标题、分类登记表、导航、每页条数、脉络图配置
   content.config.ts     frontmatter 的 schema 校验
+  home.config.ts        首页背景路径、桌面/手机裁切位置和介绍
   lib/posts.ts          文章读取、排序、分组、日期与阅读时间格式化
   lib/graph.ts          构建时解析脉络图文件（按栏目 slug 匹配，读取修改时间）
   components/           Header / Footer / PostCard / KnowledgeGraph / TableOfContents 等
@@ -52,6 +59,65 @@ wrangler.jsonc          Cloudflare Workers 静态托管配置
 ```
 
 `public/` 和 `src/assets/` 的区别：`public/` 原样拷贝、路径可预测，适合正文里 `![](/foo.png)` 引用的图；`src/assets/` 会被 Astro 压缩、转 webp、生成多档 srcset 并把宽高写进 HTML，适合由组件渲染的图（目前只有脉络图）。
+
+## 三个板块与首页背景
+
+- `/`：图片首页。`public/home/background-left.webp` 来自用户提供的「网站背景左侧版本.png」；桌面和手机共用这张图，手机裁切位置偏向左侧，保留画面中的人物。
+- `/music/`：专辑、曲目搜索和风格筛选。专辑详情位于 `/music/albums/<id>/`，单曲与感想位于 `/music/<id>/`。
+- `/writing/`：承接旧首页的分类、最新文章、项目和知识脉络。原有 `/posts/`、文章详情、项目、分类、归档、标签、搜索与 RSS 地址保持不变。
+
+替换首页图片时，把文件放到 `public/home/`，修改 `src/home.config.ts` 的 `desktopImage` 与 `mobileImage`。`desktopPosition` 和 `mobilePosition` 接受 CSS `object-position`（如 `50% 35%`）。首页固定使用该图片，不受文章的亮暗主题影响。
+
+## 发布音乐与编辑感想
+
+可以复制 `content/albums/example-album.md` 和 `content/music/example-track-one.md`；这些模板都是草稿，仅 `npm run dev` 可见，生产构建不会生成它们的页面。复制后使用新的小写英文文件名，替换占位 ID、正文和作者，再设置 `draft: false`。专辑也必须设为非草稿。
+
+专辑示例（`content/albums/my-album.md`）：
+
+```markdown
+---
+title: 我的专辑
+date: 2026-09-22
+description: 一句话介绍这张专辑。
+cover: /music/my-album.webp
+draft: true
+---
+
+专辑的创作背景或收录说明。
+```
+
+单曲示例（`content/music/my-song.md`）：
+
+```markdown
+---
+title: 我的曲目
+artist: 作者署名
+album: my-album
+trackNumber: 1
+date: 2026-09-22
+tags: [钢琴, 氛围]
+neteaseId: '替换为真实歌曲ID'
+embed: false
+noteType: 创作感想
+description: 显示在曲目列表和搜索结果中的感想摘要。
+draft: true
+---
+
+在这里写完整感想，支持标题、段落、图片和引用。
+```
+
+- `date` 为本站收录日期；知道发行日期时填写可选的 `released: YYYY-MM-DD`。按发行日期排序，未填写时用收录日期；页面会明确区分“发行于”和“收录于”。未知发行日期不要猜测。
+- `album` 必须是已存在的专辑文件名，不带 `.md`。`trackNumber` 是本站专辑内的展示顺序，正整数且同专辑不能重复。站内选录不等于平台完整专辑。
+- `neteaseId` 必须用引号包围，填写链接 `song?id=` 后的数字。专辑可另外填写自己的可选 `neteaseId`，生成平台专辑入口。
+- `noteType` 可填“创作感想”或“听后感”，默认前者。提供的《寂寞烟火（0.8x）》保留网易云署名“泡泡”，文字为听后感初稿，不冒称本站作者的原创作品。
+- `cover` 可省略；单曲默认使用专辑封面。支持站内根路径与 HTTPS 图片地址，加载失败显示文字封面。推荐把自己的封面放到 `public/music/`。
+- `updated: YYYY-MM-DD` 用于显著修订后的日期；摘要要同步修改 `description`。
+- `embed` 默认 `false`，此时只显示网易云收听入口；确认目标歌曲可嵌入后再开启。首页和专辑页只在点击“试听”时加载一个共享播放器；单曲详情提供播放器。`auto=0` 不自动播放，切歌或关闭会销毁旧播放器，跳转页面会停止播放。
+- 平台播放器受歌曲状态、网络和浏览器限制；网页无法可靠读取跨域 iframe 内部的播放结果，因此始终保留网易云链接。不会抓取音频，也不会绕过平台限制。
+- 首次收录的《寂寞烟火（0.8x）》在当前浏览器验证中未呈现网易云播放器，因此暂设 `embed: false`。在自己的浏览器确认该歌曲支持官方外链后，可改为 `true`；站内试听组件已实现。
+- 全文搜索收录已发布的歌曲信息与感想。草稿曲目、草稿专辑及其全部曲目从生产路由与搜索中排除；RSS 继续只订阅原有文章。
+
+发布前依次运行 `npm test`、`npm run check`、`npm run build`，再用 `npm run preview` 检查搜索和播放器。感想更新同样通过提交、构建发布，不需要数据库或登录后台。
 
 ## 写一篇新文章
 
@@ -77,14 +143,14 @@ frontmatter 字段说明：
 | `title` | 是 | 文章标题 |
 | `date` | 是 | 发布日期，`YYYY-MM-DD` |
 | `description` | 是 | 摘要，用于列表页和 SEO |
-| `category` | 是 | 必须是 `知识分享` / `技术博客` / `AI产品经理的思考` 之一，写错构建会直接失败 |
+| `category` | 是 | 必须是 `知识分享` / `技术博客` / `AI+产品` / `惚兮恍兮，恍兮惚兮` 之一，写错构建会直接失败 |
 | `tags` | 否 | 数组，自由添加，默认空 |
 | `draft` | 否 | `true` 时只在 `npm run dev` 可见，不会发布到线上 |
 | `updated` | 否 | 显著修订后填写，会在文章页显示"最后修订于" |
 
 分类是刻意受限的：schema 从 `src/consts.ts` 的登记表生成，拼错分类名构建会报错而不是静默产生一个空分类页。新增分类需要先在 `src/consts.ts` 的 `CATEGORIES` 里登记。
 
-草稿可以放心提交进仓库，`draft: true` 的文章不会出现在线上的任何位置，包括列表、归档、标签、RSS 和搜索索引。
+`draft: true` 的文章不会出现在构建后的站点，包括列表、归档、标签、RSS 和搜索索引；公开 Git 仓库中的源文件仍然可见，草稿标记不是隐私保护。
 
 正文里引用图片：把图放进 `public/`，然后写 `![说明](/图片名.png)`，路径以 `/` 开头。
 
@@ -113,9 +179,10 @@ App --> User: 登录成功
 | --- | --- |
 | `knowledge-graph-knowledge.png` | 知识分享 |
 | `knowledge-graph-tech.png` | 技术博客 |
-| `knowledge-graph-ai-pm.png` | AI产品经理的思考 |
+| `knowledge-graph-ai-product.png` | AI+产品 |
+| `knowledge-graph-huxi-huangxi.png` | 惚兮恍兮，恍兮惚兮 |
 
-换图就是**覆盖同名文件**，不需要改任何代码。首页右栏显示三张缩略图，`/graph/` 显示大图。
+换图就是**覆盖同名文件**，不需要改任何代码。图文首页右栏按四个分类显示缩略图，`/graph/` 显示大图。
 
 - 扩展名不限：`png` / `jpg` / `jpeg` / `webp` / `avif` / `svg` 都认。同名多扩展名同时存在时的取用优先级见 `src/lib/graph.ts`
 - 建议宽度 1600px 以上。Astro 会自动压缩、转 webp、生成多档 srcset，不必自己压
@@ -133,7 +200,7 @@ App --> User: 登录成功
 
 ### GitHub Pages 主站
 
-push 到 `main` 就会触发 `.github/workflows/deploy.yml`，跑 `npm ci` → `npm run check` → `npm run build`，然后发布到 GitHub Pages。仓库设置里 Pages 的 Source 需要选 **GitHub Actions**（不是 Deploy from a branch）。
+push 到 `main` 就会触发 `.github/workflows/deploy.yml`，跑 `npm ci` → `npm run check` → `npm test` → `npm run build`，然后发布到 GitHub Pages。仓库设置里 Pages 的 Source 需要选 **GitHub Actions**（不是 Deploy from a branch）。
 
 `npm run check` 在部署流程里是一道闸：frontmatter 写错分类名、漏必填字段会在这里失败，而不是等到线上页面变成空白。所以部署失败先看 Actions 日志的这一步。
 

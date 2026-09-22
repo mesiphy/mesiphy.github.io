@@ -1,4 +1,4 @@
-import { defineCollection } from 'astro:content';
+import { defineCollection, reference } from 'astro:content';
 import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 import { CATEGORY_NAMES } from './consts';
@@ -21,4 +21,45 @@ const posts = defineCollection({
   }),
 });
 
-export const collections = { posts };
+const cover = z.string().refine(
+  (value) => /^\/(?!\/)/.test(value) || /^https:\/\//.test(value),
+  '封面必须是 / 开头的站内路径或 HTTPS 图片地址',
+).optional();
+
+const albums = defineCollection({
+  loader: glob({ base: './content/albums', pattern: '*.md' }),
+  schema: z.object({
+    title: z.string().min(1),
+    date: z.coerce.date(),
+    released: z.coerce.date().optional(),
+    neteaseId: z.string().regex(/^[1-9]\d*$/).optional(),
+    description: z.string().min(1),
+    cover,
+    draft: z.boolean().default(false),
+    updated: z.coerce.date().optional(),
+  }),
+});
+
+const music = defineCollection({
+  loader: glob({ base: './content/music', pattern: '*.md' }),
+  schema: z.object({
+    title: z.string().min(1),
+    artist: z.string().min(1),
+    album: reference('albums'),
+    trackNumber: z.number().int().positive(),
+    date: z.coerce.date(),
+    released: z.coerce.date().optional(),
+    tags: z.array(z.string().trim().min(1)).default([]),
+    // 保留为字符串，避免平台 ID 被数值转换改变。
+    neteaseId: z.string().regex(/^[1-9]\d*$/, '请填写引号包围的网易云歌曲 ID'),
+    description: z.string().min(1),
+    noteType: z.enum(['创作感想', '听后感']).default('创作感想'),
+    cover,
+    // 未验证或不支持外链的曲目只提供原平台链接。
+    embed: z.boolean().default(false),
+    draft: z.boolean().default(false),
+    updated: z.coerce.date().optional(),
+  }),
+});
+
+export const collections = { posts, albums, music };

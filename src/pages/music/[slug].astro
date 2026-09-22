@@ -1,0 +1,46 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MusicCover from '../../components/music/MusicCover.astro';
+import MusicPlayer from '../../components/music/MusicPlayer.astro';
+import { getMusicCatalog, albumUrl, neteaseUrl, type Track, type Album } from '../../lib/music';
+import { formatDate, isoDate } from '../../lib/posts';
+import '../../styles/music.css';
+export async function getStaticPaths() {
+  const { albums, tracks } = await getMusicCatalog();
+  const byId = new Map(albums.map((album) => [album.id, album]));
+  return tracks.map((track) => ({ params: { slug: track.id }, props: { track, album: byId.get(track.data.album.id)! } }));
+}
+interface Props { track: Track; album: Album }
+const { track, album } = Astro.props;
+const { Content } = await render(track);
+const cover = track.data.cover ?? album.data.cover;
+---
+<BaseLayout title={track.data.title} description={track.data.description} image={cover} type="article" publishedDate={track.data.date} fullWidth>
+  <article class="music-page">
+    <p class="music-crumb"><a href="/music/">音乐</a> / <a href={albumUrl(album)}>{album.data.title}</a></p>
+    <div data-pagefind-body>
+      <header class="music-detail-head">
+        <div class="music-detail-cover" data-pagefind-ignore><MusicCover src={cover} title={track.data.title} eager /></div>
+        <div>
+          {track.data.draft && <p class="music-draft">草稿 · 仅开发预览</p>}
+          <h1 data-pagefind-meta="title">{track.data.title}</h1>
+          <p class="meta">{track.data.artist} · {album.data.title}</p>
+          <p class="meta">{track.data.released ? '发行' : '收录'}于 <time datetime={isoDate(track.data.released ?? track.data.date)}>{formatDate(track.data.released ?? track.data.date)}</time></p>
+          {track.data.tags.length > 0 && <p class="meta">{track.data.tags.join(' · ')}</p>}
+          {track.data.updated && <p class="meta">最后修订于 <time datetime={isoDate(track.data.updated)}>{formatDate(track.data.updated)}</time></p>}
+          <p class="music-detail-description">{track.data.description}</p>
+          <div data-pagefind-ignore>
+            <a class="music-source" href={neteaseUrl(track.data.neteaseId)} target="_blank" rel="noopener noreferrer">在网易云收听 ↗</a>
+            {track.data.embed && <a class="music-source" href="#music-player" data-preview data-song-id={track.data.neteaseId} data-song-title={track.data.title} data-song-artist={track.data.artist} data-song-embed="true">站内试听</a>}
+          </div>
+        </div>
+      </header>
+      {track.data.embed && <div data-pagefind-ignore><MusicPlayer {track} /></div>}
+      <section class="music-note">
+        <h2>{track.data.noteType ?? '创作感想'}</h2>
+        <div class="prose"><Content /></div>
+      </section>
+    </div>
+  </article>
+</BaseLayout>

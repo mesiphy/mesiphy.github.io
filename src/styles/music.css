@@ -1,0 +1,27 @@
+.music-page { max-width: 68rem; margin-inline: auto; }
+.music-head { padding: .2rem 0 2rem; }
+.music-head h1 { font-size: clamp(2.5rem, 5vw, 3.6rem); letter-spacing: .06em; line-height: 1.35; }
+.music-head > p { color: var(--ink-soft); margin: .65rem 0 0; font-size: 1rem; }
+.music-albums { margin-bottom: 3rem; }
+.music-albums h2 { font-size: 1.65rem; margin-bottom: 1.2rem; }
+.music-album-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 2rem; }
+.music-album-grid > * { max-width: 250px; }
+.music-empty { padding: 2rem 0; color: var(--ink-soft); border-block: 1px solid var(--rule); }
+.music-crumb { margin-bottom: 1.5rem; font: .8rem/1.7 var(--font-ui); color: var(--ink-soft); }
+.music-crumb a { color: inherit; }
+.music-detail-head { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 2.5rem; align-items: start; margin-bottom: 2.5rem; }
+.music-detail-head h1 { font-size: clamp(1.8rem, 4vw, 2.7rem); overflow-wrap: anywhere; line-height: 1.45; margin-bottom: .7rem; }
+.music-detail-head .meta { margin: .4rem 0; line-height: 1.8; }
+.music-detail-description { color: var(--ink-soft); margin: 1rem 0; }
+.music-source { display: inline-block; color: var(--accent); font: .85rem/1.8 var(--font-ui); margin-right: 1.25rem; }
+.music-note { max-width: 48rem; margin-top: 2.5rem; }
+.music-note > h2 { font-size: 1.5rem; padding-bottom: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--rule); }
+.music-note .prose { max-width: none; overflow-wrap: anywhere; }
+.music-draft { color: var(--accent-warm); font: .8rem/1.7 var(--font-ui); }
+.music-album-description { max-width: 48rem; margin-bottom: 2.5rem; }
+@media (max-width: 40rem) {
+  .music-album-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; }
+  .music-detail-head { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .music-detail-cover { max-width: 220px; }
+  .music-albums h2 { font-size: 1.4rem; }
+}

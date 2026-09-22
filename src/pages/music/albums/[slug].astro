@@ -1,0 +1,36 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import MusicCover from '../../../components/music/MusicCover.astro';
+import MusicPlayer from '../../../components/music/MusicPlayer.astro';
+import TrackList from '../../../components/music/TrackList.astro';
+import { getMusicCatalog, albumTracks, type Album, type Track } from '../../../lib/music';
+import { formatDate } from '../../../lib/posts';
+import '../../../styles/music.css';
+export async function getStaticPaths() {
+  const { albums, tracks } = await getMusicCatalog();
+  return albums.map((album) => ({ params: { slug: album.id }, props: { album, tracks: albumTracks(tracks, album) } }));
+}
+interface Props { album: Album; tracks: Track[] }
+const { album, tracks } = Astro.props;
+const { Content } = await render(album);
+---
+<BaseLayout title={album.data.title} description={album.data.description} image={album.data.cover} fullWidth>
+  <div class="music-page">
+    <p class="music-crumb"><a href="/music/">音乐</a> / 专辑</p>
+    <header class="music-detail-head">
+      <div class="music-detail-cover"><MusicCover src={album.data.cover} title={album.data.title} eager /></div>
+      <div>
+        {album.data.draft && <p class="music-draft">草稿 · 仅开发预览</p>}
+        <h1>{album.data.title}</h1>
+        <p class="meta">{album.data.released ? '发行' : '收录'}于 {formatDate(album.data.released ?? album.data.date)} · 本站收录 {tracks.length} 首</p>
+        {album.data.updated && <p class="meta">最后修订于 {formatDate(album.data.updated)}</p>}
+        <p class="music-detail-description">{album.data.description}</p>
+        {album.data.neteaseId && <a class="music-source" href={`https://music.163.com/album?id=${album.data.neteaseId}`} target="_blank" rel="noopener noreferrer">在网易云打开专辑 ↗</a>}
+      </div>
+    </header>
+    <div class="music-album-description prose"><Content /></div>
+    <MusicPlayer />
+    <TrackList {tracks} albums={[album]} title="专辑曲目" />
+  </div>
+</BaseLayout>
